@@ -10,7 +10,7 @@ public class Token {
         MAKE, PRINT,
         GREATER, SMALLER,
         COMMA, FUNC, RETURN,
-        IN,
+        IN, DOT_DOT,
         DOT, COLUMN,
         IF, ELSE, FOR, WHILE, OUT, LEFT_BRACKET, RIGHT_BRACKET, EOF
     }

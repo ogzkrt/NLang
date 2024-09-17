@@ -52,7 +52,7 @@ class ForLoopTests {
     void test_shouldFail_When_VariableIsNotIterable() {
         String test = """
                 make a = 2;
-                for x in a{
+                for x in a {
                     print(x);
                 }
                 """;
@@ -61,11 +61,126 @@ class ForLoopTests {
         } catch (RuntimeException e) {
             assertEquals("variable a is not iterable. at line 2:10", e.getMessage());
             assertEquals("""
-                            for x in a{
+                            for x in a {
                                      ^
                             """,
                     errStream.toString());
         }
     }
+    @Test
+    void test_ForLoopWithRangeEqualsWorks() {
+        String test = """
+                for 1..=3 {
+                    print(i);
+                }
+                """;
+        
+        run(test);
+        String expected = """
+                1.0
+                2.0
+                3.0
+                """;
+        assertEquals(expected,outputStream.toString());
+        
+    }
+    @Test
+    void test_ForLoopWithRangeLessThanWorks() {
+        String test = """
+                for 1..3 {
+                    print(i);
+                }
+                """;
 
+        run(test);
+        String expected = """
+                1.0
+                2.0
+                """;
+        assertEquals(expected,outputStream.toString());
+
+    }
+
+    @Test
+    void test_ForInLoop() {
+        String test = """
+                make a = ["Omer","Ali","Osman"];
+                for x in a {
+                    print(x);
+                }
+                """;
+
+        run(test);
+        String expected = """
+                Omer
+                Ali
+                Osman
+                """;
+        assertEquals(expected,outputStream.toString());
+
+    }
+
+    @Test
+    void test_ForInLoopWithDefaultIndex() {
+        String test = """
+                make a = ["Omer","Ali","Osman"];
+                for x in a {
+                    print(a[i]);
+                }
+                """;
+
+        run(test);
+        String expected = """
+                Omer
+                Ali
+                Osman
+                """;
+        assertEquals(expected,outputStream.toString());
+
+    }
+
+    @Test
+    void test_ForInLoopWithSpecialIndex() {
+        String test = """
+                make a = ["Omer","Ali","Osman"];
+                for x in a : special {
+                    print(a[special]);
+                }
+                """;
+
+        run(test);
+        String expected = """
+                Omer
+                Ali
+                Osman
+                """;
+        assertEquals(expected,outputStream.toString());
+
+    }
+
+    @Test
+    void test_matrixWithNestedLoop() {
+        String test = """
+                make a = [1,2,3];
+                make b = ["a","b","c"];
+                
+                for 0..len(a) : x {
+                    for x..len(b) : y{
+                        print(a[x],b[y]);
+                    }
+                }
+                """;
+
+        run(test);
+        String expected = """
+                1.0a
+                1.0b
+                1.0c
+                2.0b
+                2.0c
+                3.0c
+                """;
+        assertEquals(expected,outputStream.toString());
+
+    }
 }

@@ -32,7 +32,7 @@ public class Parser {
         if (match(TokenType.FUNC)) return parseFuncStatement();
         if (match(TokenType.MAKE)) return parseVarDeclaration();
         if (match(TokenType.IF)) return parseIfStatement();
-        if (match(TokenType.FOR)) return parseForSecondVersion();
+        if (match(TokenType.FOR)) return parseForStatement();
         if (match(TokenType.PRINT)) return parsePrint();
         if (match(TokenType.RETURN)) return parseReturnStatement();
         if (match(TokenType.LBRACE)) return parseBlockV2();
@@ -54,39 +54,40 @@ public class Parser {
         return new NLangArray(name, elements);
     }
 
-    private ASTNode parseForSecondVersion() {
-        ASTNode startNode;
-        Token startVarName;
-        Token indexVarName = new Token(TokenType.IDENTIFIER, "i", 0, 0, 0);
-
-        if (check(TokenType.NUMBER)) {
-            Token start = consume(TokenType.NUMBER, "error while parsing for second-version");
-            startNode = new Number(Double.parseDouble(start.value));
-            consume(TokenType.DOT, "expecting . after identifier");
-            consume(TokenType.DOT, "expecting ..");
-            ASTNode end = parseExpression();
-            ASTNode block = parseBlock();
-            return new ForNodeExperimental(startNode, end, block);
+    private ASTNode parseForLoopWithNumberRange(ASTNode startNode) {
+        boolean equal = match(TokenType.ASSIGN);
+        ASTNode end = parseExpression();
+        Token indexVariable = new Token(TokenType.IDENTIFIER, "i", 0, 0, 0);
+        if(match(TokenType.COLUMN)){
+            indexVariable = consume(TokenType.IDENTIFIER, "index variable should be identifier ");
         }
-        startVarName = consume(TokenType.IDENTIFIER, "expecting identifier like 'i'");
-        if (check(TokenType.COMMA)) {
-            consume(TokenType.COMMA, "expecting ,");
-            Token second = consume(TokenType.IDENTIFIER, "expecting identifier like 'i'");
-            consume(TokenType.IN, "for a in array:");
-            Token iterableToken = peek();
-            ASTNode iterable = parseExpression();
-            iterable.token = Optional.of(iterableToken);
-            ASTNode body = parseBlock();
-            return new ForInLoop(iterable, body, second, startVarName);
-        } else {
-            consume(TokenType.IN, "for a in array:");
-            Token iterableToken = peek();
-            ASTNode iterable = parseExpression();
-            iterable.token = Optional.of(iterableToken);
-            ASTNode body = parseBlock();
-            return new ForInLoop(iterable, body, startVarName, indexVarName);
-        }
+        ASTNode block = parseBlock();
+        return new ForNodeExperimental(startNode, end, indexVariable, block, equal);
+    }
 
+    private ASTNode parseForInLoop(Token loopVariable) {
+        Token iterableToken = peek();
+        ASTNode endNode = parseExpression();
+        endNode.token = Optional.of(iterableToken);
+        Token indexVariable = new Token(TokenType.IDENTIFIER, "i", 0, 0, 0);
+        if (match(TokenType.COLUMN)) {
+            indexVariable = consume(TokenType.IDENTIFIER, "index variable should be identifier ");
+        }
+        ASTNode body = parseBlock();
+        return new ForInLoop(loopVariable, endNode, body, indexVariable);
+
+    }
+
+    private ASTNode parseForStatement() {
+        Token loopVarToken = peek();
+        ASTNode startNode = parseExpression();
+        if (match(TokenType.DOT_DOT)) {
+            return parseForLoopWithNumberRange(startNode);
+        }
+        if (match(TokenType.IN)) {
+            return parseForInLoop(loopVarToken);
+        }
+        throw Err.err("Unexpected in for loop", peek());
     }
 
     private ASTNode parseBlockV2() {
@@ -224,14 +225,14 @@ public class Parser {
         }
         return expr;
     }
-    
-    private ASTNode parseCall(){
+
+    private ASTNode parseCall() {
         ASTNode expr = parsePrimary();
         Token name = previous();
-        if(match(TokenType.LPAREN)){
-            return parseFunctionCall(name,null);
+        if (match(TokenType.LPAREN)) {
+            return parseFunctionCall(name, null);
         }
-        if(match(TokenType.LEFT_BRACKET)){
+        if (match(TokenType.LEFT_BRACKET)) {
             return parseIndexAccess(name);
         }
         return expr;
@@ -245,7 +246,7 @@ public class Parser {
             } while (match(TokenType.COMMA));
         }
         consume(TokenType.RPAREN, "Expect ')' after arguments.");
-        return new FunctionCall(callee,token, arguments);
+        return new FunctionCall(callee, token, arguments);
     }
 
     private ASTNode parseIndexAccess(final Token token) {
@@ -253,13 +254,13 @@ public class Parser {
         consume(TokenType.RIGHT_BRACKET, "Expected ]");
         return new ArrayIndexAccess(token, index);
     }
-    
+
     /**
      * make array = [1,2,3];
      * array.reverse()
      * array.add(1);
      * array.remove(1);
-     * */
+     */
     private ASTNode parseMemberCall() {
         ASTNode expr = parseCall();
         while (match(TokenType.DOT)) {
@@ -289,7 +290,7 @@ public class Parser {
         }
         throw Err.err("Unexpected token: ", peek());
     }
-    
+
     private boolean match(TokenType... types) {
         for (TokenType type : types) {
             if (check(type)) {

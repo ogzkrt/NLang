@@ -80,11 +80,11 @@ public class Lexer {
                 addToken(TokenType.MULTIPLY);
                 break;
             case '/':
-                if(peek()=='/'){
+                if (peek() == '/') {
                     while (peek() != '\n' && !isAtEnd()) {
                         advance();
                     }
-                }else{
+                } else {
                     addToken(TokenType.DIVIDE);
                 }
                 break;
@@ -104,7 +104,12 @@ public class Lexer {
                 addToken(TokenType.RIGHT_BRACKET);
                 break;
             case '.':
-                addToken(TokenType.DOT);
+                if (peek() == '.') {
+                    addToken(TokenType.DOT_DOT);
+                    advance();
+                } else {
+                    addToken(TokenType.DOT);
+                }
                 break;
             case ':':
                 addToken(TokenType.COLUMN);

@@ -28,13 +28,13 @@ class FunctionCall extends ASTNode {
 
     @Override
     public Object evaluate(Environment env) {
-        
-        if(callee!=null){
+
+        if (callee != null) {
             Object evaluated = callee.evaluate(env);
-            
+
             return null;
         }
-        
+
         NLangFunction func = (NLangFunction) env.getFunction(token);
         List<Object> evaluatedArguments = new ArrayList<>();
         for (ASTNode argument : arguments) {
@@ -241,34 +241,34 @@ class Assignment extends ASTNode {
 }
 
 class ForInLoop extends ASTNode {
-    private final ASTNode iterable;
+    private final Token loopVar;
+    private final ASTNode endNode;
     private final ASTNode body;
-    private final Token loopVarName;
-    private final Token indexVarName;
+    private final Token indexVar;
 
-    ForInLoop(final ASTNode iterable, final ASTNode body, final Token loopVarName,
-              final Token indexVarName) {
-        this.iterable = iterable;
+    ForInLoop(Token loopVar, ASTNode endNode, ASTNode body, Token indexVar) {
+        this.loopVar = loopVar;
+        this.endNode = endNode;
         this.body = body;
-        this.loopVarName = loopVarName;
-        this.indexVarName = indexVarName;
+        this.indexVar = indexVar;
     }
 
     @Override
     public Object evaluate(Environment env) {
 
-        Object potentialIterable = iterable.evaluate(env);
+        Object potentialIterable = endNode.evaluate(env);
         if (!(potentialIterable instanceof Iterable<?>)) {
-            iterable.token.ifPresent(t -> {
+            endNode.token.ifPresent(t -> {
                 throw Err.err("variable " + t.value + " is not iterable.", t);
             });
         }
         List<Object> variable = (List<Object>) potentialIterable;
 
+        final Environment loopEnv = new Environment(env);
+        loopEnv.setVariable(indexVar, 0);
         for (int i = 0; i < variable.size(); i++) {
-            Environment loopEnv = new Environment(env);
-            loopEnv.setVariable(loopVarName, variable.get(i));
-            loopEnv.setVariable(indexVarName, (double) i);
+            loopEnv.setVariable(loopVar, variable.get(i));
+            loopEnv.setVariable(indexVar, (double) i);
             body.evaluate(loopEnv);
         }
         return null;
@@ -279,21 +279,26 @@ class ForNodeExperimental extends ASTNode {
 
     private final ASTNode start;
     private final ASTNode end;
+    private final Token indexVariable;
     private final ASTNode body;
+    private final boolean isEqual;
 
-    ForNodeExperimental(ASTNode start, ASTNode end, ASTNode body) {
+    ForNodeExperimental(ASTNode start, ASTNode end, Token indexVariable, ASTNode body, boolean isEqual) {
         this.start = start;
         this.end = end;
+        this.indexVariable = indexVariable;
         this.body = body;
+        this.isEqual = isEqual;
     }
 
     @Override
     public Object evaluate(Environment env) {
-        Double startValue = (Double) (start.evaluate(env));
-        Double endValue = (Double) end.evaluate(env);
-        for (int i = startValue.intValue(); i < endValue.intValue(); i++) {
-            Environment loopEnv = new Environment(env);
-            loopEnv.setVariable(new Token(TokenType.IDENTIFIER, "i", 0, 0, 0), (double) i);
+        int startValue = ((Double) (start.evaluate(env))).intValue();
+        int endValue = ((Double) end.evaluate(env)).intValue();
+        endValue = isEqual ? endValue + 1 : endValue;
+        Environment loopEnv = new Environment(env);
+        for (int i = startValue; i < endValue; i++) {
+            loopEnv.setVariable(indexVariable, (double) i);
             body.evaluate(loopEnv);
 
         }
