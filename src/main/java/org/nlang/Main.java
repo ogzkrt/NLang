@@ -74,15 +74,15 @@ public class Main {
             List<Token> tokens = lexer.tokenize();
             Parser parser = new Parser(tokens);
             List<ASTNode> statements = parser.parse();
-            for (ASTNode stmt:statements) {
-                if (stmt instanceof NLangFunction){
+            for (ASTNode stmt : statements) {
+                if (stmt instanceof NLangFunction) {
                     env.addFunction((NLangFunction) stmt);
                     continue;
                 }
                 stmt.evaluate(env);
-                
+
             }
-            
+
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }

@@ -39,26 +39,24 @@ public class Parser {
         return parseExpressionStatement();
     }
 
-    private ASTNode parseArrayExpression(Token name) {
-        consume(TokenType.LEFT_BRACKET, "Expecting [");
+    private ASTNode parseArrayExpression() {
         List<ASTNode> elements = new ArrayList<>();
         if (!check(TokenType.RIGHT_BRACKET)) {
-            elements.add(parseExpression());
-            while (match(TokenType.COMMA)) {
+            do {
                 elements.add(parseExpression());
-            }
+            } while (match(TokenType.COMMA));
             consume(TokenType.RIGHT_BRACKET, "Expecting ] for array");
         } else {
             consume(TokenType.RIGHT_BRACKET, "Expecting ] for array");
         }
-        return new NLangArray(name, elements);
+        return new NLangArray(elements);
     }
 
     private ASTNode parseForLoopWithNumberRange(ASTNode startNode) {
         boolean equal = match(TokenType.ASSIGN);
         ASTNode end = parseExpression();
         Token indexVariable = new Token(TokenType.IDENTIFIER, "i", 0, 0, 0);
-        if(match(TokenType.COLUMN)){
+        if (match(TokenType.COLUMN)) {
             indexVariable = consume(TokenType.IDENTIFIER, "index variable should be identifier ");
         }
         ASTNode block = parseBlock();
@@ -285,8 +283,8 @@ public class Parser {
             consume(TokenType.RPAREN, "Expected ')' after expression.");
             return expr;
         }
-        if (check(TokenType.LEFT_BRACKET)) {
-            return parseArrayExpression(null);
+        if (match(TokenType.LEFT_BRACKET)) {
+            return parseArrayExpression();
         }
         throw Err.err("Unexpected token: ", peek());
     }
