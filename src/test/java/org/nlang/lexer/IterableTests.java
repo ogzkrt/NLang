@@ -142,4 +142,43 @@ class IterableTests {
         assertEquals("[3.0, 2.0, 1.0]"+System.lineSeparator(),outputStream.toString());
 
     }
+
+    @Test
+    void test_NestedArrayWorks() {
+        String test = """
+                make a = [[1,2,3],[4,5,6],[7,8,9]];
+                for x in a {
+                    print(a[i][1]);
+                }
+                """;
+
+        run(test);
+        assertEquals("""
+                2.0
+                5.0
+                8.0
+                """,outputStream.toString());
+
+    }
+
+    @Test
+    void test_SettingElementInNestedArrayWorks() {
+        String test = """
+                make a = [[1,2,3],[4,5,6],[7,8,9]];
+                for x in a {
+                    a[i][1]=5;
+                }
+                for x in a {
+                    print(a[i][1]);
+                }
+                """;
+
+        run(test);
+        assertEquals("""
+                5.0
+                5.0
+                5.0
+                """,outputStream.toString());
+
+    }
 }

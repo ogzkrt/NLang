@@ -12,13 +12,13 @@ public class TimeFunction {
 
     private final List<ASTNode> body = new ArrayList<>();
     private final NLangFunction nLangFunction;
-    
-    public TimeFunction(){
+
+    public TimeFunction() {
         body.add(new ASTNode() {
             @Override
             public EvalResult evaluate(Environment env) {
 
-                return new EvalResult((double) System.currentTimeMillis(),false);
+                return new EvalResult((double) System.currentTimeMillis(), false);
             }
         });
         nLangFunction = new NLangFunction(
@@ -30,5 +30,5 @@ public class TimeFunction {
     public NLangFunction getnLangFunction() {
         return nLangFunction;
     }
-    
+
 }

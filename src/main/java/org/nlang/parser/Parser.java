@@ -185,7 +185,7 @@ public class Parser {
         consume(TokenType.ASSIGN, "This is not statement = expected");
         ASTNode value = parseExpression();
         if (expr instanceof ArrayIndexAccess v) {
-            return new ArrayIndexSet(v.token, v.index, value);
+            return new ArrayIndexSet(v.parent, v.index, value);
         }
         if (!(expr instanceof Variable v)) {
             throw Err.err("can only assign to the variable", previous());
@@ -224,35 +224,6 @@ public class Parser {
         return expr;
     }
 
-    private ASTNode parseCall() {
-        ASTNode expr = parsePrimary();
-        Token name = previous();
-        if (match(TokenType.LPAREN)) {
-            return parseFunctionCall(name, null);
-        }
-        if (match(TokenType.LEFT_BRACKET)) {
-            return parseIndexAccess(name);
-        }
-        return expr;
-    }
-
-    private ASTNode parseFunctionCall(Token token, ASTNode callee) {
-        List<ASTNode> arguments = new ArrayList<>();
-        if (!check(TokenType.RPAREN)) {
-            do {
-                arguments.add(parseExpression());
-            } while (match(TokenType.COMMA));
-        }
-        consume(TokenType.RPAREN, "Expect ')' after arguments.");
-        return new FunctionCall(callee, token, arguments);
-    }
-
-    private ASTNode parseIndexAccess(final Token token) {
-        ASTNode index = parseExpression();
-        consume(TokenType.RIGHT_BRACKET, "Expected ]");
-        return new ArrayIndexAccess(token, index);
-    }
-
     /**
      * make array = [1,2,3];
      * array.reverse()
@@ -268,6 +239,35 @@ public class Parser {
         return expr;
     }
 
+    private ASTNode parseCall() {
+        ASTNode expr = parsePrimary();
+        Token name = previous();
+        if (match(TokenType.LPAREN)) {
+            return parseFunctionCall(name, null);
+        }
+        while (match(TokenType.LEFT_BRACKET)) {
+            expr = parseIndexAccess(expr);
+        }
+        return expr;
+    }
+
+    private ASTNode parseFunctionCall(Token token, ASTNode callee) {
+        List<ASTNode> arguments = new ArrayList<>();
+        if (!check(TokenType.RPAREN)) {
+            do {
+                arguments.add(parseExpression());
+            } while (match(TokenType.COMMA));
+        }
+        consume(TokenType.RPAREN, "Expect ')' after arguments.");
+        return new FunctionCall(callee, token, arguments);
+    }
+
+    private ASTNode parseIndexAccess(ASTNode parent) {
+        ASTNode index = parseExpression();
+        consume(TokenType.RIGHT_BRACKET, "Expected ]");
+        return new ArrayIndexAccess(parent, index);
+    }
+    
     private ASTNode parsePrimary() {
         if (match(TokenType.NUMBER)) {
             return new Number(Integer.parseInt(previous().value));

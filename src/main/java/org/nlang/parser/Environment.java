@@ -15,7 +15,7 @@ public class Environment {
 
     public Environment() {
         this(null);
-        
+
         addFunction(new TimeFunction().getnLangFunction());
         addFunction(new LengthFunction().getnLangFunction());
     }

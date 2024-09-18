@@ -17,6 +17,6 @@ public class NLangArray extends ASTNode {
         for (ASTNode element : elements) {
             result.add(element.evaluate(env).result);
         }
-        return new EvalResult(result,false);
+        return new EvalResult(result, false);
     }
 }
