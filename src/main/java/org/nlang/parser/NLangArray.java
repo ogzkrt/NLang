@@ -12,11 +12,11 @@ public class NLangArray extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
+    public EvalResult evaluate(Environment env) {
         List<Object> result = new ArrayList<>();
         for (ASTNode element : elements) {
-            result.add(element.evaluate(env));
+            result.add(element.evaluate(env).result);
         }
-        return result;
+        return new EvalResult(result,false);
     }
 }

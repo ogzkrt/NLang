@@ -3,6 +3,7 @@ package org.nlang.parser.builtins;
 import org.nlang.lexer.Token;
 import org.nlang.parser.ASTNode;
 import org.nlang.parser.Environment;
+import org.nlang.parser.EvalResult;
 import org.nlang.parser.NLangFunction;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +16,9 @@ public class TimeFunction {
     public TimeFunction(){
         body.add(new ASTNode() {
             @Override
-            public Object evaluate(Environment env) {
+            public EvalResult evaluate(Environment env) {
 
-                return (double) System.currentTimeMillis();
+                return new EvalResult((double) System.currentTimeMillis(),false);
             }
         });
         nLangFunction = new NLangFunction(

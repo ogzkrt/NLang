@@ -16,11 +16,11 @@ public class NLangFunction extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
+    public EvalResult evaluate(Environment env) {
         throw new UnsupportedOperationException("functions can't be evaluated in NLang");
     }
 
-    Object call(List<Object> arguments, Environment environment) {
+    EvalResult call(List<Object> arguments, Environment environment) {
 //        if (arguments.size() != parameters.size()) {
 //            throw new RuntimeException("Argument count mismatch in function call: " + name);
 //        }
@@ -29,13 +29,13 @@ public class NLangFunction extends ASTNode {
         for (int i = 0; i < parameters.size(); i++) {
             localEnvironment.setVariable(parameters.get(i), arguments.get(i));
         }
-        Object result;
+        EvalResult result;
         for (ASTNode expr : body) {
             result = expr.evaluate(localEnvironment);
             if (expr instanceof Return) {
                 return result;
             }
-            if (result != null) {
+            if (result != null && result.isReturn) {
                 return result;
             }
         }

@@ -12,7 +12,7 @@ public abstract class ASTNode {
 
     Optional<Token> token;
 
-    public abstract Object evaluate(Environment env);
+    public abstract EvalResult evaluate(Environment env);
 }
 
 class FunctionCall extends ASTNode {
@@ -27,7 +27,7 @@ class FunctionCall extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
+    public EvalResult evaluate(Environment env) {
 
         if (callee != null) {
             Object evaluated = callee.evaluate(env);
@@ -38,9 +38,8 @@ class FunctionCall extends ASTNode {
         NLangFunction func = (NLangFunction) env.getFunction(token);
         List<Object> evaluatedArguments = new ArrayList<>();
         for (ASTNode argument : arguments) {
-            evaluatedArguments.add(argument.evaluate(env));
+            evaluatedArguments.add(argument.evaluate(env).result);
         }
-
         return func.call(evaluatedArguments, env);
     }
 }
@@ -54,9 +53,10 @@ class Return extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
-
-        return value.evaluate(env);
+    public EvalResult evaluate(Environment env) {
+        EvalResult evaluate = value.evaluate(env);
+        evaluate.isReturn = true;
+        return evaluate;
     }
 }
 
@@ -71,28 +71,28 @@ class ArrayOperations extends ASTNode {
 
 
     @Override
-    public Object evaluate(Environment env) {
+    public EvalResult evaluate(Environment env) {
         if (array instanceof Variable vr) {
             if (!(env.getVariable(vr.token) instanceof Iterable<?>)) {
                 throw Err.err(String.format("Can not make array operation '%s'", arrayFunction.token.value), vr.token);
             }
         }
-        Object result = array.evaluate(env);
+        Object result = array.evaluate(env).result;
         if (result != null) {
             List<Object> test = (List<Object>) result;
             String value = arrayFunction.token.value;
             if (value.equals("add")) {
                 arrayFunction.arguments.forEach(a -> {
-                    test.add(a.evaluate(env));
+                    test.add(a.evaluate(env).result);
                 });
             } else if (value.equals("remove")) {
                 arrayFunction.arguments.forEach(a -> {
-                    test.remove(a.evaluate(env));
+                    test.remove(a.evaluate(env).result);
                 });
             } else if (value.equals("reverse")) {
-                return test.reversed();
+                return new EvalResult(test.reversed(),false);
             } else if (value.equals("last")) {
-                return test.getLast();
+                return new EvalResult(test.getLast(),false);
             }
         }
         return null;
@@ -111,13 +111,13 @@ class ArrayIndexSet extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
-        Double indexDouble = (Double) this.index.evaluate(env);
+    public EvalResult evaluate(Environment env) {
+        Double indexDouble = (Double) this.index.evaluate(env).result;
         List<Object> array = (List<Object>) env.getVariable(arrayName);
         if (array.size() > indexDouble.intValue()) {
-            array.set(indexDouble.intValue(), value.evaluate(env));
+            array.set(indexDouble.intValue(), value.evaluate(env).result);
         } else {
-            array.add(indexDouble.intValue(), value.evaluate(env));
+            array.add(indexDouble.intValue(), value.evaluate(env).result);
         }
 //        if(indexDouble.intValue()>=array.size()){
 //            List<Object> newArray = new ArrayList<>(indexDouble.intValue()*2);
@@ -140,10 +140,10 @@ class ArrayIndexAccess extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
+    public EvalResult evaluate(Environment env) {
         List<Double> variable = (List<Double>) env.getVariable(token);
-        Double evaluated = (Double) index.evaluate(env);
-        return variable.get(evaluated.intValue());
+        Double evaluated = (Double) index.evaluate(env).result;
+        return new EvalResult(variable.get(evaluated.intValue()),false);
     }
 }
 
@@ -155,8 +155,8 @@ class Number extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
-        return value;
+    public EvalResult evaluate(Environment env) {
+        return new EvalResult(value,false);
     }
 }
 
@@ -174,17 +174,17 @@ class Binary extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
-        double leftVal = (double) left.evaluate(env);
-        double rightVal = (double) right.evaluate(env);
+    public EvalResult evaluate(Environment env) {
+        double leftVal = (double) left.evaluate(env).result;
+        double rightVal = (double) right.evaluate(env).result;
         return switch (operator) {
-            case PLUS -> leftVal + rightVal;
-            case MINUS -> leftVal - rightVal;
-            case MULTIPLY -> leftVal * rightVal;
-            case DIVIDE -> leftVal / rightVal;
-            case GREATER -> leftVal > rightVal;
-            case SMALLER -> leftVal < rightVal;
-            default -> Err.err("Unknown operator: " + operatorToken.value, operatorToken);
+            case PLUS -> new EvalResult(leftVal + rightVal,false);
+            case MINUS -> new EvalResult(leftVal - rightVal,false);
+            case MULTIPLY -> new EvalResult(leftVal * rightVal,false);
+            case DIVIDE -> new EvalResult(leftVal / rightVal,false);
+            case GREATER -> new EvalResult(leftVal > rightVal,false);
+            case SMALLER -> new EvalResult(leftVal < rightVal,false);
+            default -> throw Err.err("Unknown operator: " + operatorToken.value, operatorToken);
         };
     }
 }
@@ -197,8 +197,8 @@ class Variable extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
-        return env.getVariable(token);
+    public EvalResult evaluate(Environment env) {
+        return new EvalResult(env.getVariable(token),false);
     }
 }
 
@@ -212,12 +212,12 @@ class VarDeclaration extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
+    public EvalResult evaluate(Environment env) {
         if (value instanceof NLangArray) {
-            Object evaluated = value.evaluate(env);
-            env.setVariable(token, evaluated);
+            EvalResult evaluated = value.evaluate(env);
+            env.setVariable(token, evaluated.result);
         } else {
-            env.setVariable(token, value.evaluate(env));
+            env.setVariable(token, value.evaluate(env).result);
         }
         return null;
     }
@@ -234,8 +234,8 @@ class Assignment extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
-        env.assignVariable(token, value.evaluate(env));
+    public EvalResult evaluate(Environment env) {
+        env.assignVariable(token, value.evaluate(env).result);
         return null;
     }
 }
@@ -254,9 +254,9 @@ class ForInLoop extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
+    public EvalResult evaluate(Environment env) {
 
-        Object potentialIterable = endNode.evaluate(env);
+        Object potentialIterable = endNode.evaluate(env).result;
         if (!(potentialIterable instanceof Iterable<?>)) {
             endNode.token.ifPresent(t -> {
                 throw Err.err("variable " + t.value + " is not iterable.", t);
@@ -292,9 +292,9 @@ class ForNodeExperimental extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
-        int startValue = ((Double) (start.evaluate(env))).intValue();
-        int endValue = ((Double) end.evaluate(env)).intValue();
+    public EvalResult evaluate(Environment env) {
+        int startValue = ((Double) (start.evaluate(env).result)).intValue();
+        int endValue = ((Double) end.evaluate(env).result).intValue();
         endValue = isEqual ? endValue + 1 : endValue;
         Environment loopEnv = new Environment(env);
         for (int i = startValue; i < endValue; i++) {
@@ -316,8 +316,8 @@ class If extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
-        boolean result = (boolean) this.condition.evaluate(env);
+    public EvalResult evaluate(Environment env) {
+        boolean result = (boolean) this.condition.evaluate(env).result;
         if (result) {
             return this.blockExpr.evaluate(env);
         }
@@ -333,9 +333,9 @@ class Print extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
+    public EvalResult evaluate(Environment env) {
         for (ASTNode e : expressions) {
-            System.out.print(e.evaluate(env));
+            System.out.print(e.evaluate(env).result);
         }
         System.out.println();
         return null;
@@ -350,14 +350,17 @@ class Block extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
+    public EvalResult evaluate(Environment env) {
         Environment localEnv = new Environment(env);
-        Object result = 0;
+        EvalResult result = null;
         for (ASTNode expr : expressions) {
             if (expr instanceof NLangFunction) {
                 localEnv.addFunction((NLangFunction) expr);
             } else {
                 result = expr.evaluate(localEnv);
+                if(result!=null && result.isReturn){
+                    return result;
+                }
             }
         }
         return result;
@@ -376,7 +379,7 @@ class StringExpr extends ASTNode {
     }
 
     @Override
-    public Object evaluate(Environment env) {
-        return value;
+    public EvalResult evaluate(Environment env) {
+        return new EvalResult(value,false);
     }
 }
