@@ -59,6 +59,7 @@ class ExceptionTests {
             assertEquals("""
                     make a = 10
                               ^
+                    make b = 12;
                     """, errStream.toString());
         }
     }

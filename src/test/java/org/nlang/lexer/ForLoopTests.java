@@ -61,8 +61,10 @@ class ForLoopTests {
         } catch (RuntimeException e) {
             assertEquals("variable a is not iterable. at line 2:10", e.getMessage());
             assertEquals("""
+                            make a = 2;
                             for x in a {
                                      ^
+                                print(x);
                             """,
                     errStream.toString());
         }

@@ -59,6 +59,7 @@ class IterableTests {
         } catch (RuntimeException e) {
             assertEquals("Can not make array operation 'reverse' at line 2:1", e.getMessage());
             assertEquals("""
+                            make a = 2;
                             a.reverse();
                             ^
                             """,
