@@ -2,7 +2,7 @@ package org.nlang.parser.builtins;
 
 
 import org.nlang.lexer.Token;
-import org.nlang.parser.ASTNode;
+import org.nlang.parser.astnodes.ASTNode;
 import org.nlang.parser.Environment;
 import org.nlang.parser.EvalResult;
 import org.nlang.parser.NLangFunction;

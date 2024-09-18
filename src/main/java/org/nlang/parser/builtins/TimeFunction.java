@@ -1,7 +1,7 @@
 package org.nlang.parser.builtins;
 
 import org.nlang.lexer.Token;
-import org.nlang.parser.ASTNode;
+import org.nlang.parser.astnodes.ASTNode;
 import org.nlang.parser.Environment;
 import org.nlang.parser.EvalResult;
 import org.nlang.parser.NLangFunction;
@@ -18,7 +18,7 @@ public class TimeFunction {
             @Override
             public EvalResult evaluate(Environment env) {
 
-                return new EvalResult((double) System.currentTimeMillis(), false);
+                return new EvalResult((double) System.currentTimeMillis());
             }
         });
         nLangFunction = new NLangFunction(

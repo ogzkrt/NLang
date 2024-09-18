@@ -1,12 +1,16 @@
 package org.nlang.parser;
 
 public class EvalResult {
-    Object result;
-    boolean isReturn;
+    public Object result;
+    public boolean isReturn;
+
+    public EvalResult(Object result) {
+        this(result, false);
+    }
 
     public EvalResult(Object result, boolean isReturn) {
         this.result = result;
         this.isReturn = isReturn;
     }
-    
+
 }

@@ -1,6 +1,9 @@
 package org.nlang.parser;
 
+import org.nlang.err.Err;
 import org.nlang.lexer.Token;
+import org.nlang.parser.astnodes.ASTNode;
+import org.nlang.parser.astnodes.ReturnNode;
 
 import java.util.List;
 
@@ -20,10 +23,10 @@ public class NLangFunction extends ASTNode {
         throw new UnsupportedOperationException("functions can't be evaluated in NLang");
     }
 
-    EvalResult call(List<Object> arguments, Environment environment) {
-//        if (arguments.size() != parameters.size()) {
-//            throw new RuntimeException("Argument count mismatch in function call: " + name);
-//        }
+    public EvalResult call(List<Object> arguments, Environment environment) {
+        if (arguments.size() != parameters.size()) {
+            throw Err.err("Argument count mismatch in function call: ", name);
+        }
 
         final Environment localEnvironment = new Environment(environment);
         for (int i = 0; i < parameters.size(); i++) {
@@ -32,7 +35,7 @@ public class NLangFunction extends ASTNode {
         EvalResult result;
         for (ASTNode expr : body) {
             result = expr.evaluate(localEnvironment);
-            if (expr instanceof Return) {
+            if (expr instanceof ReturnNode) {
                 return result;
             }
             if (result != null && result.isReturn) {

@@ -2,6 +2,7 @@ package org.nlang.parser;
 
 import org.nlang.err.Err;
 import org.nlang.lexer.Token;
+import org.nlang.parser.astnodes.ASTNode;
 import org.nlang.parser.builtins.LengthFunction;
 import org.nlang.parser.builtins.TimeFunction;
 
@@ -35,7 +36,7 @@ public class Environment {
         throw Err.err("Undefined variable: " + token.value, token);
     }
 
-    void assignVariable(final Token token, final Object value) {
+    public void assignVariable(final Token token, final Object value) {
         if (variables.containsKey(token.value)) {
             variables.put(token.value, value);
             return;
@@ -47,7 +48,7 @@ public class Environment {
         throw Err.err("Undefined variable: " + token.value, token);
     }
 
-    void setVariable(final Token token, final Object value) {
+    public void setVariable(final Token token, final Object value) {
         variables.put(token.value, value);
     }
 

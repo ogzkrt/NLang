@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.nlang.err.Err;
-import org.nlang.parser.ASTNode;
+import org.nlang.parser.astnodes.ASTNode;
 import org.nlang.parser.Environment;
 import org.nlang.parser.NLangFunction;
 import org.nlang.parser.Parser;

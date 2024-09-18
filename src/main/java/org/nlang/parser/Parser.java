@@ -3,6 +3,23 @@ package org.nlang.parser;
 import org.nlang.err.Err;
 import org.nlang.lexer.Token;
 import org.nlang.lexer.Token.TokenType;
+import org.nlang.parser.astnodes.ASTNode;
+import org.nlang.parser.astnodes.ArrayIndexAccessNode;
+import org.nlang.parser.astnodes.ArrayIndexSetNode;
+import org.nlang.parser.astnodes.ArrayOperationsNode;
+import org.nlang.parser.astnodes.AssignmentNode;
+import org.nlang.parser.astnodes.BinaryNode;
+import org.nlang.parser.astnodes.BlockNode;
+import org.nlang.parser.astnodes.ForInLoopNode;
+import org.nlang.parser.astnodes.ForLoopNode;
+import org.nlang.parser.astnodes.FunctionCallNode;
+import org.nlang.parser.astnodes.IfNode;
+import org.nlang.parser.astnodes.NumberNode;
+import org.nlang.parser.astnodes.PrintNode;
+import org.nlang.parser.astnodes.ReturnNode;
+import org.nlang.parser.astnodes.StringNode;
+import org.nlang.parser.astnodes.VarDeclarationNode;
+import org.nlang.parser.astnodes.VariableNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +77,7 @@ public class Parser {
             indexVariable = consume(TokenType.IDENTIFIER, "index variable should be identifier ");
         }
         ASTNode block = parseBlock();
-        return new ForNodeExperimental(startNode, end, indexVariable, block, equal);
+        return new ForLoopNode(startNode, end, indexVariable, block, equal);
     }
 
     private ASTNode parseForInLoop(Token loopVariable) {
@@ -72,7 +89,7 @@ public class Parser {
             indexVariable = consume(TokenType.IDENTIFIER, "index variable should be identifier ");
         }
         ASTNode body = parseBlock();
-        return new ForInLoop(loopVariable, endNode, body, indexVariable);
+        return new ForInLoopNode(loopVariable, endNode, body, indexVariable);
 
     }
 
@@ -94,17 +111,17 @@ public class Parser {
             statements.add(parseStatement());
         }
         consume(TokenType.RBRACE, "Expecting }");
-        return new Block(statements);
+        return new BlockNode(statements);
     }
 
-    private Block parseBlock() {
+    private BlockNode parseBlock() {
         consume(TokenType.LBRACE, "Expecting {");
         List<ASTNode> statements = new ArrayList<>();
         while (!isAtEnd() && !check(TokenType.RBRACE)) {
             statements.add(parseStatement());
         }
         consume(TokenType.RBRACE, "Expecting }");
-        return new Block(statements);
+        return new BlockNode(statements);
     }
 
     private ASTNode parseReturnStatement() {
@@ -113,14 +130,14 @@ public class Parser {
             value = parseExpression();
         }
         consume(TokenType.SEMICOLON, "Expect ';' after return value.");
-        return new Return(value);
+        return new ReturnNode(value);
     }
 
     private ASTNode parseIfStatement() {
         consume(TokenType.LPAREN, "Expecting ( after if");
         ASTNode condition = parseExpression();
         consume(TokenType.RPAREN, "Expecting )");
-        return new If(condition, parseBlock());
+        return new IfNode(condition, parseBlock());
 
     }
 
@@ -128,7 +145,7 @@ public class Parser {
         Token name = consume(TokenType.IDENTIFIER, "function  should have a name");
         consume(TokenType.LPAREN, "Expecting (");
         List<Token> parameters = parseParameters();
-        Block astNode = parseBlock();
+        BlockNode astNode = parseBlock();
         return new NLangFunction(name, parameters, astNode.getExpressions());
     }
 
@@ -153,7 +170,7 @@ public class Parser {
         value = parseExpression();
         consume(TokenType.SEMICOLON,
                 "Expected ';'");
-        return new VarDeclaration(name, value);
+        return new VarDeclarationNode(name, value);
     }
 
     private ASTNode parsePrint() {
@@ -166,7 +183,7 @@ public class Parser {
         }
         consume(TokenType.RPAREN, "Expected ')' after print statement");
         consume(TokenType.SEMICOLON, "Expected ';' after print statement");
-        return new Print(expressions);
+        return new PrintNode(expressions);
     }
 
     private ASTNode parseExpressionStatement() {
@@ -177,20 +194,20 @@ public class Parser {
 
     private ASTNode parseAssignStatement() {
         ASTNode expr = parseExpression();
-        if (expr instanceof ArrayOperations) {
+        if (expr instanceof ArrayOperationsNode) {
             // a.add(1);
             // here we should return before expecting =
             return expr;
         }
         consume(TokenType.ASSIGN, "This is not statement = expected");
         ASTNode value = parseExpression();
-        if (expr instanceof ArrayIndexAccess v) {
-            return new ArrayIndexSet(v.parent, v.index, value);
+        if (expr instanceof ArrayIndexAccessNode v) {
+            return new ArrayIndexSetNode(v.parent, v.index, value);
         }
-        if (!(expr instanceof Variable v)) {
+        if (!(expr instanceof VariableNode v)) {
             throw Err.err("can only assign to the variable", previous());
         }
-        return new Assignment(v.token, value);
+        return new AssignmentNode(v.token, value);
     }
 
     private ASTNode parseExpression() {
@@ -198,7 +215,7 @@ public class Parser {
         while (match(TokenType.GREATER, TokenType.SMALLER)) {
             Token operator = previous();
             ASTNode right = parseAddition();
-            expr = new Binary(expr, right, operator);
+            expr = new BinaryNode(expr, right, operator);
         }
         return expr;
     }
@@ -209,7 +226,7 @@ public class Parser {
         while (match(TokenType.PLUS, TokenType.MINUS)) {
             Token operator = previous();
             ASTNode right = parseFactor();
-            expr = new Binary(expr, right, operator);
+            expr = new BinaryNode(expr, right, operator);
         }
         return expr;
     }
@@ -219,7 +236,7 @@ public class Parser {
         while (match(TokenType.MULTIPLY, TokenType.DIVIDE)) {
             Token operator = previous();
             ASTNode right = parseMemberCall();
-            expr = new Binary(expr, right, operator);
+            expr = new BinaryNode(expr, right, operator);
         }
         return expr;
     }
@@ -234,7 +251,7 @@ public class Parser {
         ASTNode expr = parseCall();
         while (match(TokenType.DOT)) {
             ASTNode right = parseCall();
-            expr = new ArrayOperations(expr, (FunctionCall) right);
+            expr = new ArrayOperationsNode(expr, (FunctionCallNode) right);
         }
         return expr;
     }
@@ -259,24 +276,24 @@ public class Parser {
             } while (match(TokenType.COMMA));
         }
         consume(TokenType.RPAREN, "Expect ')' after arguments.");
-        return new FunctionCall(callee, token, arguments);
+        return new FunctionCallNode(callee, token, arguments);
     }
 
     private ASTNode parseIndexAccess(ASTNode parent) {
         ASTNode index = parseExpression();
         consume(TokenType.RIGHT_BRACKET, "Expected ]");
-        return new ArrayIndexAccess(parent, index);
+        return new ArrayIndexAccessNode(parent, index);
     }
     
     private ASTNode parsePrimary() {
         if (match(TokenType.NUMBER)) {
-            return new Number(Integer.parseInt(previous().value));
+            return new NumberNode(Integer.parseInt(previous().value));
         }
         if (match(TokenType.STRING)) {
-            return new StringExpr(previous().value);
+            return new StringNode(previous().value);
         }
         if (match(TokenType.IDENTIFIER)) {
-            return new Variable(previous());
+            return new VariableNode(previous());
         }
         if (match(TokenType.LPAREN)) {
             ASTNode expr = parseExpression();

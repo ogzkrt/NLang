@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.nlang.err.Err;
-import org.nlang.parser.ASTNode;
+import org.nlang.parser.astnodes.ASTNode;
 import org.nlang.parser.Environment;
 import org.nlang.parser.NLangFunction;
 import org.nlang.parser.Parser;
@@ -114,6 +114,18 @@ class IterableTests {
 
         run(test);
         assertEquals("3.0"+System.lineSeparator(),outputStream.toString());
+
+    }
+
+    @Test
+    void test_shouldReturnFirstItem() {
+        String test = """
+                make a = [1,2,3];
+                print(a.first());
+                """;
+
+        run(test);
+        assertEquals("1.0"+System.lineSeparator(),outputStream.toString());
 
     }
 

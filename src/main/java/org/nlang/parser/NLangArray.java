@@ -1,5 +1,6 @@
 package org.nlang.parser;
 
+import org.nlang.parser.astnodes.ASTNode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,6 @@ public class NLangArray extends ASTNode {
         for (ASTNode element : elements) {
             result.add(element.evaluate(env).result);
         }
-        return new EvalResult(result, false);
+        return new EvalResult(result);
     }
 }

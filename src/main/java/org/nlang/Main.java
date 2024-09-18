@@ -4,7 +4,7 @@ import org.nlang.err.Err;
 import org.nlang.lexer.Lexer;
 import org.nlang.lexer.Token;
 import org.nlang.parser.Environment;
-import org.nlang.parser.ASTNode;
+import org.nlang.parser.astnodes.ASTNode;
 import org.nlang.parser.NLangFunction;
 import org.nlang.parser.Parser;
 
