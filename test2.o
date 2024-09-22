@@ -1,0 +1,45 @@
+make start = time();
+func fact(n){
+    if(n<2) { return 1;}
+    return n* fact(n-1);
+}
+
+make x = 7;
+print("Factorial of ",x," is : ",fact(x));
+
+make a = 20;
+{
+    a = 99;
+    print("a in scope: ",a);
+}
+print("a in global scope: ",a);
+a = 12;
+print("a in global scope: ",a);
+
+make end = time();
+
+print("Time passed: ",end-start);
+
+
+make start = time();
+func fib(n){
+    if(n<3) { return 1;}
+    return fib(n-1) + fib(n-2);
+}
+
+make x = 14;
+print("Fib(",x,") is: ",fib(x));
+
+make end = time();
+
+print("Time passed: ",end-start);
+
+func fact(n){
+    make result = 1;
+    for(make a=2; a<n+1; a = a+1;){
+        result = a*result;
+    }
+    return result;
+}
+
+print(fact(6));

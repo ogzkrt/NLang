@@ -86,8 +86,8 @@ print(result);
 ### Built-in functions
 - `len` function able to measure len of any iterable including strings
   ```console
-  print("test");  # 4
-  print([1,2,3]); # 3 
+  print(len("test"));  # 4
+  print(len([1,2,3])); # 3 
   ```
 - `time` function to measure time
   ```html
@@ -95,6 +95,15 @@ print(result);
   //some stuff
   print("Time passed",time()-time());
   ```
+
+#### Objects
+
+Objects are just hashmaps !
+
+```html
+make obj = { "key1":"value1"};
+print(obj.key1); # value1
+```
 
 #### Error reporting
 
