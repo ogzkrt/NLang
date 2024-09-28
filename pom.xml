@@ -57,7 +57,7 @@
                         </manifest>
                     </archive>
                     <outputDirectory>./release</outputDirectory>
-                    <finalName>NLang.jar</finalName>
+                    <finalName>NLang</finalName>
                 </configuration>
             </plugin>
 
