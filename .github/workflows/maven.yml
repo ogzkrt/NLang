@@ -21,7 +21,3 @@ jobs:
 
       - name: Build and Test
         run: mvn clean install --batch-mode -DfailIfNoTests=true
-
-
-      - name: Print Test Results
-        run: mvn surefire-report:report
