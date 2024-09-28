@@ -24,5 +24,22 @@
         </dependency>
         
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include> <!-- Default: includes all classes that end with 'Test' -->
+                        <include>**/*Tests.java</include> <!-- Add more patterns to match your test classes -->
+                    </includes>
+                    <printSummary>true</printSummary>  <!-- Prints a summary of all test results -->
+                    <trimStackTrace>false</trimStackTrace> <!-- Shows full stack trace for failures -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 
 </project>
