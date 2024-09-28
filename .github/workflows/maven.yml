@@ -27,8 +27,8 @@ jobs:
         java-version: '22'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
+    - name: Build
       run: mvn -B package --file pom.xml
 
-    - name: Build with Maven and run tests
-      run: mvn clean install --batch-mode
+    - name: Test
+      run: mvn clean install -Dtest=*Tests.java --batch-mode
