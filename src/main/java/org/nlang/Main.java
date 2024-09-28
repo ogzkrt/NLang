@@ -5,7 +5,6 @@ import org.nlang.lexer.Lexer;
 import org.nlang.lexer.Token;
 import org.nlang.parser.Environment;
 import org.nlang.parser.ASTNode;
-import org.nlang.parser.ASTNode.*;
 import org.nlang.parser.FunctionDefinitionNode;
 import org.nlang.parser.Parser;
 
@@ -29,13 +28,13 @@ public class Main {
             String filename = args[0];
             fileMode(filename);
         } else {
-            System.out.println("Usage: java -jar olang [filename]");
+            System.out.println("Usage: java -jar NLang [filename.o]");
         }
     }
 
     private static void interactiveMode() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("OLang Type 'exit' to quit.");
+        System.out.println("NLang Type 'exit' to quit.");
 
         while (true) {
             System.out.print("> ");

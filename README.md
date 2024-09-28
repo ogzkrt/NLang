@@ -1,3 +1,11 @@
+### To run
+Create a file like `test.o` and run
+
+```commandline
+java -jar NLang.jar test.o
+```
+It becomes REPL if you don't provide any arguments to jar file.
+
 ### Supported features
 
 #### Defining variables
