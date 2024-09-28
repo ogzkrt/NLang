@@ -10,6 +10,8 @@ import org.nlang.parser.Environment;
 import org.nlang.parser.FunctionDefinitionNode;
 import org.nlang.parser.Parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.nlang.lexer.IterableTests.sanitize;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
@@ -52,11 +54,12 @@ class VariableScopeTests {
                 """;
 
         run(test);
-        assertEquals("""
+        String expected = """
                 2.0
                 12.0
                 2.0
-                """, outputStream.toString());
+                """;
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
     }
 
     @Test
@@ -72,11 +75,12 @@ class VariableScopeTests {
                 """;
 
         run(test);
-        assertEquals("""
+        String expected = """
                 2.0
                 12.0
                 12.0
-                """, outputStream.toString());
+                """;
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
     }
 
     @Test

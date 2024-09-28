@@ -11,6 +11,8 @@ import org.nlang.parser.ASTNode.*;
 import org.nlang.parser.FunctionDefinitionNode;
 import org.nlang.parser.Parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.nlang.lexer.IterableTests.sanitize;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
@@ -76,7 +78,7 @@ class ForLoopTests {
                 2.0
                 3.0
                 """;
-        assertEquals(expected, outputStream.toString());
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
     }
 
@@ -93,7 +95,7 @@ class ForLoopTests {
                 1.0
                 2.0
                 """;
-        assertEquals(expected, outputStream.toString());
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
     }
 
@@ -112,7 +114,7 @@ class ForLoopTests {
                 Ali
                 Osman
                 """;
-        assertEquals(expected, outputStream.toString());
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
     }
 
@@ -131,7 +133,7 @@ class ForLoopTests {
                 Ali
                 Osman
                 """;
-        assertEquals(expected, outputStream.toString());
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
     }
 
@@ -150,7 +152,7 @@ class ForLoopTests {
                 Ali
                 Osman
                 """;
-        assertEquals(expected, outputStream.toString());
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
     }
 
@@ -176,7 +178,7 @@ class ForLoopTests {
                 2.0c
                 3.0c
                 """;
-        assertEquals(expected, outputStream.toString());
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
     }
 }

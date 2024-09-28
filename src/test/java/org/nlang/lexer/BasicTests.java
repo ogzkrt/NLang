@@ -7,6 +7,8 @@ import org.nlang.Main;
 import org.nlang.parser.Environment;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.nlang.lexer.IterableTests.sanitize;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
@@ -71,7 +73,7 @@ class BasicTests {
                 36.0
                 64.0
                 """;
-        assertEquals(expected, outputStream.toString());
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
         
     }
 
@@ -91,7 +93,7 @@ class BasicTests {
                 index: 2.0 value: 36.0
                 index: 3.0 value: 64.0
                 """;
-        assertEquals(expected, outputStream.toString());
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
     }
 
@@ -116,7 +118,7 @@ class BasicTests {
                 Mehmet
                 Osman
                 """;
-        assertEquals(expected, outputStream.toString());
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
     }
 
@@ -136,7 +138,7 @@ class BasicTests {
                 3.0
                 7.5
                 """;
-        assertEquals(expected, outputStream.toString());
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
     }
 
@@ -155,7 +157,7 @@ class BasicTests {
                 Element at index: 2.0 is 3.0
                 Element at index: 3.0 is 7.5
                 """;
-        assertEquals(expected, outputStream.toString());
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
     }
 
@@ -171,7 +173,7 @@ class BasicTests {
         String expected = """
                 10.0
                 """;
-        assertEquals(expected, outputStream.toString());
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
     }
     

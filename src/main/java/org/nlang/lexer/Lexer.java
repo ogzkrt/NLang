@@ -145,7 +145,7 @@ public class Lexer {
         if (isAtEnd()) {
             throw Err.err("Unterminated string.", line, columnEnd);
         }
-        advance(); // The closing ".
+        advance();
         String value = source.substring(start + 1, current - 1);
         addToken(TokenType.STRING, value);
     }

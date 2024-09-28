@@ -162,7 +162,7 @@ class IterableTests {
                 """;
 
         run(test);
-        assertEquals("""
+        assertEquals(sanitize("""
                 {
                 	name : Ali,
                 	job : cifti,
@@ -178,7 +178,7 @@ class IterableTests {
                 	job : donerci,
                 }
                 
-                """, outputStream.toString());
+                """), sanitize(outputStream.toString()));
 
     }
 
@@ -192,11 +192,11 @@ class IterableTests {
                 """;
 
         run(test);
-        assertEquals("""
+        assertEquals(sanitize("""
                 2.0
                 5.0
                 8.0
-                """, outputStream.toString());
+                """), sanitize(outputStream.toString()));
 
     }
 
@@ -213,11 +213,11 @@ class IterableTests {
                 """;
 
         run(test);
-        assertEquals("""
+        assertEquals(sanitize("""
                 5.0
                 5.0
                 5.0
-                """, outputStream.toString());
+                """), sanitize(outputStream.toString()));
 
     }
     @Test
@@ -229,9 +229,15 @@ class IterableTests {
                 """;
 
         run(test);
-        assertEquals("""
+        assertEquals(sanitize("""
                 [null, null, null, null, 101.0]
-                """, outputStream.toString());
+                """), sanitize(outputStream.toString()));
 
     }
+
+
+    public static String sanitize(String s){
+        return s.replace("\r\n", "\n").replace("\r", "\n");
+    }
+
 }

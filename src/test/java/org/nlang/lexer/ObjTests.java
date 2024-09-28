@@ -10,7 +10,10 @@ import org.nlang.parser.Environment;
 import org.nlang.parser.ASTNode.*;
 import org.nlang.parser.FunctionDefinitionNode;
 import org.nlang.parser.Parser;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.nlang.lexer.IterableTests.sanitize;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
@@ -48,10 +51,8 @@ class ObjTests {
                 """;
 
         run(test);
-        assertEquals("""
-                {}
-                
-                """, outputStream.toString());
+        String expected = "{}".trim();
+        assertEquals(sanitize(expected), sanitize(outputStream.toString().trim()));
     }
 
 
@@ -63,9 +64,10 @@ class ObjTests {
                 """;
 
         run(test);
-        assertEquals("""
+        String expected = """
                 value1
-                """, outputStream.toString());
+                """;
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
     }
 
     @Test
@@ -80,10 +82,11 @@ class ObjTests {
                 """;
 
         run(test);
-        assertEquals("""
+        String expected = """
                 { innerKey : innerValue }
-                
-                """, outputStream.toString());
+                                
+                """;
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
     }
 
     @Test
@@ -94,7 +97,7 @@ class ObjTests {
                 "key2":"val2",
                 "inner": { "last":"Veli", "first":"Ali" }
                 };
-                
+                                
                 print(obj["key2"]);
                 print(obj.inner.last);
                 print(obj["inner"]["last"]);
@@ -104,7 +107,7 @@ class ObjTests {
                 """;
 
         run(test);
-        assertEquals("""
+        String expected = """
                 val2
                 Veli
                 Veli
@@ -114,8 +117,9 @@ class ObjTests {
                 	last : Veli,
                 	first : Ali,
                 }
-                
-                """, outputStream.toString());
+                                
+                """;
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
     }
 
     @Test
