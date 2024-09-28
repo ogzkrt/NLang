@@ -31,4 +31,4 @@ jobs:
       run: mvn -B package --file pom.xml
 
     - name: Test
-      run: mvn clean install -Dtest=*Tests --batch-mode
+      run: mvn clean install --batch-mode
