@@ -44,8 +44,26 @@
                     <trimStackTrace>false</trimStackTrace> <!-- Shows full stack trace for failures -->
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version> <!-- Use the latest stable version -->
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>org.nlang.Main</mainClass>
+                        </manifest>
+                    </archive>
+                    <outputDirectory>./release</outputDirectory>
+                    <finalName>NLang.jar</finalName>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
+
 
 
 </project>

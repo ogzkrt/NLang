@@ -7,15 +7,6 @@ func fact(n){
 make x = 7;
 print("Factorial of ",x," is : ",fact(x));
 
-make a = 20;
-{
-    a = 99;
-    print("a in scope: ",a);
-}
-print("a in global scope: ",a);
-a = 12;
-print("a in global scope: ",a);
-
 make end = time();
 
 print("Time passed: ",end-start);

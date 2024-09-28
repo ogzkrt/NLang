@@ -21,3 +21,6 @@ jobs:
 
       - name: Build and Test
         run: mvn clean install --batch-mode -DfailIfNoTests=true
+
+      - name: Make Jar under release folder
+        run: mvn package
