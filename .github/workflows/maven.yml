@@ -24,3 +24,9 @@ jobs:
 
       - name: Make Jar under release folder
         run: mvn package
+
+      - name: Upload JAR File
+        uses: actions/upload-artifact@v3
+        with:
+          name: NLang-jar
+          path: release/NLang*.jar
