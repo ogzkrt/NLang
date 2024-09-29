@@ -106,7 +106,10 @@ class CallNode extends ASTNode {
                     return new EvalResult(test.getLast());
                 } else if (value.equals("first")) {
                     return new EvalResult(test.getFirst());
+                } else {
+                    throw Err.err(String.format("%s is not a valid method on iterable", name.value), name);
                 }
+
 
             } else if (evaluated instanceof NObjectInstance n) {
                 return new EvalResult(n.getField(name));
@@ -308,7 +311,7 @@ class IndexSetNode extends ASTNode {
             }
             array.set(index.intValue(), value.evaluate(env).result);
         }
-        
+
         return null;
     }
 }
