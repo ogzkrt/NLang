@@ -16,10 +16,10 @@ public abstract class ASTNode {
 }
 
 class BinaryNode extends ASTNode {
-    private final ASTNode left;
-    private final ASTNode right;
-    private final Token operatorToken;
-    private final Token.TokenType operator;
+    final ASTNode left;
+    final ASTNode right;
+    final Token operatorToken;
+    final Token.TokenType operator;
 
     public BinaryNode(ASTNode left, ASTNode right, Token operatorToken) {
         this.left = left;
@@ -45,7 +45,7 @@ class BinaryNode extends ASTNode {
 }
 
 class BlockNode extends ASTNode {
-    private final List<ASTNode> expressions;
+    final List<ASTNode> expressions;
 
     public BlockNode(List<ASTNode> expressions) {
         this.expressions = expressions;
@@ -75,8 +75,8 @@ class BlockNode extends ASTNode {
 
 class CallNode extends ASTNode {
     final ASTNode callee;
-    public final Token name;
-    public final List<ASTNode> arguments;
+    final Token name;
+    final List<ASTNode> arguments;
 
     public CallNode(ASTNode callee, final Token token, List<ASTNode> arguments) {
         this.callee = callee;
@@ -126,9 +126,9 @@ class CallNode extends ASTNode {
 
 class ChildAccessNode extends ASTNode {
 
-    public final ASTNode index;
-    public final ASTNode parent;
-    private final Token indexToken;
+    final ASTNode index;
+    final ASTNode parent;
+    final Token indexToken;
 
     public ChildAccessNode(final ASTNode parent, final ASTNode index, final Token indexToken) {
         this.parent = parent;
@@ -145,7 +145,7 @@ class ChildAccessNode extends ASTNode {
 
 class ContainerNode extends ASTNode {
 
-    private final Map<ASTNode, ASTNode> fields;
+    final Map<ASTNode, ASTNode> fields;
     private NObjectInstance instance;
 
     public ContainerNode(Map<ASTNode, ASTNode> fields) {
@@ -168,11 +168,11 @@ class ContainerNode extends ASTNode {
 }
 
 class ForInLoopNode extends ASTNode {
-    private final Token loopVar;
-    private final ASTNode end;
-    private final ASTNode body;
-    private final Token indexVar;
-    private final Token endToken;
+    final Token loopVar;
+    final ASTNode end;
+    final ASTNode body;
+    final Token indexVar;
+    final Token endToken;
 
     public ForInLoopNode(Token loopVar, ASTNode endNode, ASTNode body, Token indexVar, Token endToken) {
         this.loopVar = loopVar;
@@ -204,11 +204,11 @@ class ForInLoopNode extends ASTNode {
 
 class ForLoopNode extends ASTNode {
 
-    private final ASTNode start;
-    private final ASTNode end;
-    private final Token indexVariable;
-    private final ASTNode body;
-    private final boolean isEqual;
+    final ASTNode start;
+    final ASTNode end;
+    final Token indexVariable;
+    final ASTNode body;
+    final boolean isEqual;
 
     public ForLoopNode(ASTNode start, ASTNode end, Token indexVariable, ASTNode body, boolean isEqual) {
         this.start = start;
@@ -234,8 +234,8 @@ class ForLoopNode extends ASTNode {
 }
 
 class IfNode extends ASTNode {
-    private final ASTNode condition;
-    private final ASTNode blockExpr;
+    final ASTNode condition;
+    final ASTNode blockExpr;
 
     public IfNode(ASTNode condition, ASTNode blockExpr) {
         this.condition = condition;
@@ -253,9 +253,9 @@ class IfNode extends ASTNode {
 }
 
 class IndexAccessNode extends ASTNode {
-    public final ASTNode index;
-    public final ASTNode parent;
-    private final Token indexValue;
+    final ASTNode index;
+    final ASTNode parent;
+    final Token indexValue;
 
     public IndexAccessNode(final ASTNode parent, final ASTNode index, final Token indexToken) {
         this.parent = parent;
@@ -314,7 +314,7 @@ class IndexSetNode extends ASTNode {
 }
 
 class NumberNode extends ASTNode {
-    private final double value;
+    final double value;
 
     public NumberNode(double value) {
         this.value = value;
@@ -327,7 +327,7 @@ class NumberNode extends ASTNode {
 }
 
 class PrintNode extends ASTNode {
-    private final List<ASTNode> expressions;
+    final List<ASTNode> expressions;
 
     public PrintNode(List<ASTNode> expressions) {
         this.expressions = expressions;
@@ -365,7 +365,7 @@ class ReturnNode extends ASTNode {
 }
 
 class StringNode extends ASTNode {
-    private final String value;
+    final String value;
 
     public StringNode(String value) {
         this.value = value;
@@ -379,7 +379,7 @@ class StringNode extends ASTNode {
 
 class VarDeclarationNode extends ASTNode {
     final Token token;
-    private final ASTNode value;
+    final ASTNode value;
 
     public VarDeclarationNode(Token token, ASTNode value) {
         this.token = token;
@@ -394,7 +394,7 @@ class VarDeclarationNode extends ASTNode {
 }
 
 class VariableNode extends ASTNode {
-    public final Token token;
+    final Token token;
 
     public VariableNode(Token token) {
         this.token = token;
@@ -409,7 +409,7 @@ class VariableNode extends ASTNode {
 
 class AssignmentNode extends ASTNode {
     final Token token;
-    private final ASTNode value;
+    final ASTNode value;
 
     public AssignmentNode(Token token, ASTNode value) {
         this.token = token;
