@@ -4,16 +4,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.nlang.Main;
-import org.nlang.err.Err;
-import org.nlang.parser.ASTNode;
+
 import org.nlang.parser.Environment;
-import org.nlang.parser.ASTNode.*;
-import org.nlang.parser.FunctionDefinitionNode;
-import org.nlang.parser.Parser;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.List;
 
 class IterableTests {
 
@@ -232,6 +228,19 @@ class IterableTests {
         assertEquals(sanitize("""
                 [null, null, null, null, 101.0]
                 """), sanitize(outputStream.toString()));
+
+    }
+
+    @Test
+    void test_String_shouldRemove_When_RemoveIsCalled() {
+        String test = """
+                make a = "123";
+                a.remove("2");
+                print(a);
+                """;
+
+        run(test);
+        assertEquals("13" + System.lineSeparator(), outputStream.toString());
 
     }
 

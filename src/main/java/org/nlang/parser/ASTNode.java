@@ -7,6 +7,7 @@ import org.nlang.lexer.Token;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public abstract class ASTNode {
@@ -74,7 +75,7 @@ class BlockNode extends ASTNode {
 }
 
 class CallNode extends ASTNode {
-    final ASTNode callee;
+    ASTNode callee;
     final Token name;
     final List<ASTNode> arguments;
 
@@ -87,42 +88,89 @@ class CallNode extends ASTNode {
     @Override
     public EvalResult evaluate(Environment env) {
 
-        if (callee != null) {
-            Object evaluated = callee.evaluate(env).result;
-            if (evaluated instanceof Iterable<?> v) {
-                List<Object> test = (List<Object>) evaluated;
-                String value = name.value;
-                if (value.equals("add")) {
-                    arguments.forEach(a -> {
-                        test.add(a.evaluate(env).result);
-                    });
-                } else if (value.equals("remove")) {
-                    arguments.forEach(a -> {
-                        test.remove(a.evaluate(env).result);
-                    });
-                } else if (value.equals("reverse")) {
-                    return new EvalResult(test.reversed());
-                } else if (value.equals("last")) {
-                    return new EvalResult(test.getLast());
-                } else if (value.equals("first")) {
-                    return new EvalResult(test.getFirst());
-                } else {
-                    throw Err.err(String.format("%s is not a valid method on iterable", name.value), name);
-                }
-
-
-            } else if (evaluated instanceof NObjectInstance n) {
-                return new EvalResult(n.getField(name));
-            }
-            return null;
-        } else {
-
+        if (callee == null) {
             FunctionDefinitionNode func = (FunctionDefinitionNode) env.getFunction(name);
             List<Object> evaluatedArguments = new ArrayList<>();
             for (ASTNode argument : arguments) {
                 evaluatedArguments.add(argument.evaluate(env).result);
             }
             return func.call(evaluatedArguments, env);
+        }
+        Object evaluated = callee.evaluate(env).result;
+
+        if (evaluated instanceof Iterable<?>) {
+            List<Object> test = new ArrayList<>((List<Object>) evaluated);
+            String value = name.value;
+            switch (value) {
+                case "add" -> {
+                    arguments.forEach(a -> test.add(a.evaluate(env).result));
+                    assignResult(env, test);
+                    return new EvalResult(new ArrayList<>(test));
+                }
+                case "remove" -> {
+                    arguments.forEach(a -> test.remove(a.evaluate(env).result));
+                    assignResult(env, test);
+                    return new EvalResult(new ArrayList<>(test));
+                }
+                case "reverse" -> {
+                    return new EvalResult(test.reversed());
+                }
+                case "last" -> {
+                    return new EvalResult(test.getLast());
+                }
+                case "first" -> {
+                    return new EvalResult(test.getFirst());
+                }
+                default -> throw Err.err(String.format("%s is not a valid method on iterable", name.value), name);
+            }
+
+
+        }
+        if (evaluated instanceof String str) {
+            List<String> newValue = str.chars()
+                    .mapToObj(c -> String.valueOf((char) c))
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            String value = name.value;
+            switch (value) {
+                case "add" -> {
+                    arguments.forEach(a -> newValue.add((String) a.evaluate(env).result));
+                    String result = String.join("", newValue);
+                    assignResult(env, result);
+                    return new EvalResult(result);
+                }
+                case "remove" -> {
+                    arguments.forEach(a -> newValue.remove(a.evaluate(env).result));
+                    String result = String.join("", newValue);
+                    assignResult(env, result);
+                    return new EvalResult(result);
+                }
+                case "reverse" -> {
+                    return new EvalResult(String.join("", newValue.reversed()));
+                }
+                case "last" -> {
+                    return new EvalResult(newValue.getLast());
+                }
+                case "first" -> {
+                    return new EvalResult(newValue.getFirst());
+                }
+                default -> throw Err.err(String.format("%s is not a valid method on iterable", name.value), name);
+            }
+
+        }
+        if (evaluated instanceof NObjectInstance n) {
+            return new EvalResult(n.getField(name));
+        }
+        throw Err.err("Wrong usage", name);
+
+    }
+
+    private void assignResult(Environment env, Object result) {
+        while (callee instanceof CallNode v) {
+            callee = v.callee;
+        }
+        if (callee instanceof VariableNode calV) {
+            env.assignVariable(calV.token, result);
         }
     }
 }
@@ -189,6 +237,9 @@ class ForInLoopNode extends ASTNode {
     public EvalResult evaluate(Environment env) {
 
         Object potentialIterable = end.evaluate(env).result;
+        if (potentialIterable instanceof String str) {
+            potentialIterable = str.chars().mapToObj(c -> String.valueOf((char) c)).toList();
+        }
         if (!(potentialIterable instanceof Iterable<?>)) {
             throw Err.err("variable " + endToken.value + " is not iterable.", endToken);
         }

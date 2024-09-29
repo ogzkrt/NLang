@@ -1,3 +1,9 @@
-make a = [1,2,3];
+make a = [].add(4).add(14).add(1).add(1).remove(1);
+print(a);
 
-print(a.last());
+make b = "oguz".add("kurt").reverse();
+print(b);
+
+for c in b{
+    print(c);
+}
