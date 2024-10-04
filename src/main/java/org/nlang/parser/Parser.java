@@ -41,13 +41,16 @@ public class Parser {
         return parseExpressionStatement();
     }
 
-    private ASTNode parseAssert(){
+    private ASTNode parseAssert() {
         Token token = previous();
         ASTNode expr = parseExpression();
-        consume(TokenType.COMMA,"Expecting ',' after asert");
-        ASTNode message = parsePrimary();
-        consume(TokenType.SEMICOLON,"Expecting ';' after asert statement");
-        return new AssertNode(token,expr,message);
+        ASTNode message = null;
+        if (check(TokenType.COMMA)) {
+            consume(TokenType.COMMA, "Expecting ',' after asert");
+            message = parsePrimary();
+        }
+        consume(TokenType.SEMICOLON, "Expecting ';' after asert statement");
+        return new AssertNode(token, expr, message);
     }
 
 
@@ -185,7 +188,7 @@ public class Parser {
         return parseEquality();
     }
 
-    private ASTNode parseEquality(){
+    private ASTNode parseEquality() {
         ASTNode expr = parseComparison();
         while (match(TokenType.EQUAL, TokenType.NOT_EQUAL)) {
             Token operator = previous();
@@ -195,7 +198,7 @@ public class Parser {
         return expr;
     }
 
-    private ASTNode parseComparison(){
+    private ASTNode parseComparison() {
         ASTNode expr = parseAddition();
         while (match(TokenType.GREATER, TokenType.SMALLER)) {
             Token operator = previous();
@@ -229,7 +232,7 @@ public class Parser {
         if (match(TokenType.MINUS, TokenType.NOT)) {
             Token operator = previous();
             ASTNode expr = parseUnary();
-            return new UnaryNode(operator,expr);
+            return new UnaryNode(operator, expr);
         }
         return parseMemberExpression();
     }
@@ -308,7 +311,7 @@ public class Parser {
 
     private ASTNode parsePrimary() {
         if (match(TokenType.NUMBER)) {
-            return new NumberNode(Integer.parseInt(previous().value));
+            return new NumberNode(Double.parseDouble(previous().value));
         }
         if (match(TokenType.STRING)) {
             return new StringNode(previous().value);
@@ -327,7 +330,7 @@ public class Parser {
         if (match(TokenType.LBRACE)) {
             return parseObject();
         }
-        if (match(TokenType.TRUE,TokenType.FALSE)){
+        if (match(TokenType.TRUE, TokenType.FALSE)) {
             return new BooleanNode(previous());
         }
         throw Err.err("Unexpected token: ", peek());

@@ -189,15 +189,11 @@ class BasicTests {
                 make s1 = "test";
                 make s2 = "test";
                 make s3 = "test2";
-                print(s1==s2);
-                print(s2==s3);
+                assert s1==s2;
+                assert s2!=s3;
                 """;
         run(test);
-        String expected = """
-                true
-                false
-                """;
-        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
+        assertTrue(errStream.toString().isEmpty());
 
     }
 
@@ -208,15 +204,11 @@ class BasicTests {
                 make n1 = 100001;
                 make n2 = 100001;
                 make n3 = 111111;
-                print(n1==n2);
-                print(n2==n3);
+                assert n1==n2, "should be equal";
+                assert n2!=n3, "not equal";
                 """;
         run(test);
-        String expected = """
-                true
-                false
-                """;
-        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
+        assertTrue(errStream.toString().isEmpty());
 
     }
 
@@ -224,17 +216,12 @@ class BasicTests {
     void testUnaryWorks() {
 
         String test = """
-                print(-1/2+5*3);
-                print(--2);
-                print(--3/2*5+(6*5));
+                assert -1/2+5*3==14.5 , "14.5";
+                assert --2 == 2, "2";
+                assert --3/2*5+(6*5) == 37.5, "37.5";
                 """;
         run(test);
-        String expected = """
-                14.5
-                2.0
-                37.5
-                """;
-        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
+        assertTrue(errStream.toString().isEmpty());
 
     }
 

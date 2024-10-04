@@ -491,7 +491,10 @@ class AssertNode extends ASTNode {
         }
         boolean r = (boolean) result;
         if (!r) {
-            throw Err.err(String.format("Assertion failed: %s", message.evaluate(env).result), token);
+            if (message != null) {
+                throw Err.err(String.format("Assertion failed: %s", message.evaluate(env).result), token);
+            }
+            throw Err.err("Assertion failed: ", token);
         }
         return new EvalResult(true);
     }

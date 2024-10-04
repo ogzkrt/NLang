@@ -10,7 +10,6 @@ import org.nlang.lexer.Token.TokenType;
 
 public class Lexer {
     private final String source;
-    private final String[] lines;
     private final List<Token> tokens = new ArrayList<>();
     private int start = 0;
     private int current = 0;
@@ -40,7 +39,6 @@ public class Lexer {
 
     public Lexer(String source) {
         this.source = source;
-        this.lines = source.split("\n");
     }
 
     public List<Token> tokenize() {
@@ -167,7 +165,7 @@ public class Lexer {
     }
 
     private void number() {
-        while (isDigit(peek())) advance();
+        while (isDigit(peek()) || (peek()=='.' && next()!='.')) advance();
         addToken(TokenType.NUMBER, source.substring(start, current));
     }
 
@@ -190,6 +188,11 @@ public class Lexer {
     private char peek() {
         if (isAtEnd()) return '\0';
         return source.charAt(current);
+    }
+
+    private char next() {
+        if (isAtEnd()) return '\0';
+        return source.charAt(current+1);
     }
 
     private boolean isDigit(char c) {
