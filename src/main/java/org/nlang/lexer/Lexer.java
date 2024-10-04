@@ -34,6 +34,8 @@ public class Lexer {
         keywords.put("true", TokenType.TRUE);
         keywords.put("false", TokenType.FALSE);
         keywords.put("assert", TokenType.ASSERT);
+        keywords.put("or", TokenType.OR);
+        keywords.put("and", TokenType.AND);
     }
 
 
@@ -165,7 +167,7 @@ public class Lexer {
     }
 
     private void number() {
-        while (isDigit(peek()) || (peek()=='.' && next()!='.')) advance();
+        while (isDigit(peek()) || (peek() == '.' && next() != '.')) advance();
         addToken(TokenType.NUMBER, source.substring(start, current));
     }
 
@@ -192,7 +194,7 @@ public class Lexer {
 
     private char next() {
         if (isAtEnd()) return '\0';
-        return source.charAt(current+1);
+        return source.charAt(current + 1);
     }
 
     private boolean isDigit(char c) {

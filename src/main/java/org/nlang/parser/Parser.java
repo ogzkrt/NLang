@@ -185,7 +185,17 @@ public class Parser {
     }
 
     private ASTNode parseExpression() {
-        return parseEquality();
+        return parseLogicalAndOr();
+    }
+
+    private ASTNode parseLogicalAndOr() {
+        ASTNode expr = parseEquality();
+        while (match(TokenType.AND, TokenType.OR)) {
+            Token operator = previous();
+            ASTNode right = parseEquality();
+            expr = new BinaryNode(expr, right, operator);
+        }
+        return expr;
     }
 
     private ASTNode parseEquality() {

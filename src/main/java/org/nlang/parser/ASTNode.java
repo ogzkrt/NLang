@@ -40,6 +40,12 @@ class BinaryNode extends ASTNode {
         if (operator == Token.TokenType.NOT_EQUAL) {
             return new EvalResult(!leftVal.equals(rightVal));
         }
+        if (operator == Token.TokenType.AND) {
+            return new EvalResult((boolean) leftVal && (boolean) rightVal);
+        }
+        if (operator == Token.TokenType.OR) {
+            return new EvalResult((boolean) leftVal || (boolean) rightVal);
+        }
         return processNumberOperations((double) leftVal, (double) rightVal, operator);
     }
 

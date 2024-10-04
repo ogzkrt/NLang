@@ -249,5 +249,20 @@ class BasicTests {
         assertTrue(errStream.toString().isEmpty());
     }
 
+    @Test
+    void testLogicalAndWorks() {
+
+        String test = """
+                make a = 10;
+                make b = 50;
+                make c = false;
+                make d = true;
+                assert a<20 and b>20 ;
+                assert c or d ;
+                """;
+        run(test);
+        assertTrue(errStream.toString().isEmpty());
+    }
+
 
 }
