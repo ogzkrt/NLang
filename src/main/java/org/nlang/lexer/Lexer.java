@@ -34,6 +34,7 @@ public class Lexer {
         keywords.put("out", TokenType.OUT);
         keywords.put("true", TokenType.TRUE);
         keywords.put("false", TokenType.FALSE);
+        keywords.put("assert", TokenType.ASSERT);
     }
 
 

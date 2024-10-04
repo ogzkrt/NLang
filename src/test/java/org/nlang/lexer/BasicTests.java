@@ -16,22 +16,26 @@ import java.io.PrintStream;
 class BasicTests {
 
     private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errStream = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
+    private final PrintStream originalErr = System.err;
     private Environment environment;
 
     @BeforeEach
     public void setUp() {
         environment = new Environment();
         System.setOut(new PrintStream(outputStream));
+        System.setErr(new PrintStream(errStream));
     }
 
     @AfterEach
     public void tearDown() {
+        System.setErr(originalErr);
         System.setOut(originalOut);
     }
-    
-    private void run(String code){
-        Main.processInput(code,environment);
+
+    private void run(String code) {
+        Main.processInput(code, environment);
     }
 
     @Test
@@ -45,6 +49,7 @@ class BasicTests {
         run(test);
         assertEquals("22.0" + System.lineSeparator(), outputStream.toString());
     }
+
     @Test
     void test2() {
 
@@ -56,7 +61,7 @@ class BasicTests {
         run(test);
         assertEquals("string1string2" + System.lineSeparator(), outputStream.toString());
     }
-    
+
     @Test
     void test3() {
 
@@ -74,7 +79,7 @@ class BasicTests {
                 64.0
                 """;
         assertEquals(sanitize(expected), sanitize(outputStream.toString()));
-        
+
     }
 
     @Test
@@ -195,6 +200,7 @@ class BasicTests {
         assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
     }
+
     @Test
     void testNumberEqualsWorks() {
 
@@ -236,16 +242,11 @@ class BasicTests {
     void testUnaryForBooleanWorks() {
 
         String test = """
-                print(!(1==1));
-                print(!(5==3));
+                assert !(1==1) == false, "should be false";
+                assert !(5==3) == true, "should be true";
                 """;
         run(test);
-        String expected = """
-                false
-                true
-                """;
-        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
-
+        assertTrue(errStream.toString().isEmpty());
     }
 
     @Test
@@ -253,18 +254,12 @@ class BasicTests {
 
         String test = """
                 make a = !(5==3);
-                print(a);
+                assert a, "a should be true";
                 make b = false;
-                print(a==b);
+                assert a!=b , "a and b is not equal";
                 """;
         run(test);
-        String expected = """
-                true
-                false
-                """;
-
-        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
-
+        assertTrue(errStream.toString().isEmpty());
     }
 
 

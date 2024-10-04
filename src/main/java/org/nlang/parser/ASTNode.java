@@ -472,6 +472,31 @@ class VariableNode extends ASTNode {
     }
 }
 
+class AssertNode extends ASTNode {
+    final ASTNode expr;
+    final Token token;
+    final ASTNode message;
+
+    public AssertNode(Token token, ASTNode expr, ASTNode message) {
+        this.expr = expr;
+        this.token = token;
+        this.message = message;
+    }
+
+    @Override
+    public EvalResult evaluate(Environment env) {
+        Object result = expr.evaluate(env).result;
+        if (!(result instanceof Boolean)) {
+            throw Err.err("Assert only accepts expr which evaluates to boolean", token);
+        }
+        boolean r = (boolean) result;
+        if (!r) {
+            throw Err.err(String.format("Assertion failed: %s", message.evaluate(env).result), token);
+        }
+        return new EvalResult(true);
+    }
+}
+
 class BooleanNode extends ASTNode {
     final Token token;
 

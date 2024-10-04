@@ -37,7 +37,17 @@ public class Parser {
         if (match(TokenType.PRINT)) return parsePrint();
         if (match(TokenType.RETURN)) return parseReturnStatement();
         if (check(TokenType.LBRACE)) return parseBlock();
+        if (match(TokenType.ASSERT)) return parseAssert();
         return parseExpressionStatement();
+    }
+
+    private ASTNode parseAssert(){
+        Token token = previous();
+        ASTNode expr = parseExpression();
+        consume(TokenType.COMMA,"Expecting ',' after asert");
+        ASTNode message = parsePrimary();
+        consume(TokenType.SEMICOLON,"Expecting ';' after asert statement");
+        return new AssertNode(token,expr,message);
     }
 
 

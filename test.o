@@ -1,9 +1,3 @@
-make a = [].add(4).add(14).add(1).add(1).remove(1);
-print(a);
-
-make b = "oguz".add("kurt").reverse();
-print(b);
-
-for c in b{
-    print(c);
-}
+assert -1/2+5*3 == 14.5 , "should be 14.5" ;
+//assert --2 == 2.0 , "should be 2.0";
+//assert --3/2*5+(6*5) == 37.5 , "should be 37.5";
