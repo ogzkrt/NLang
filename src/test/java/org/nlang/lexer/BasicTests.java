@@ -176,6 +176,96 @@ class BasicTests {
         assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
     }
-    
+
+    @Test
+    void testStringEqualsWorks() {
+
+        String test = """
+                make s1 = "test";
+                make s2 = "test";
+                make s3 = "test2";
+                print(s1==s2);
+                print(s2==s3);
+                """;
+        run(test);
+        String expected = """
+                true
+                false
+                """;
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
+
+    }
+    @Test
+    void testNumberEqualsWorks() {
+
+        String test = """
+                make n1 = 100001;
+                make n2 = 100001;
+                make n3 = 111111;
+                print(n1==n2);
+                print(n2==n3);
+                """;
+        run(test);
+        String expected = """
+                true
+                false
+                """;
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
+
+    }
+
+    @Test
+    void testUnaryWorks() {
+
+        String test = """
+                print(-1/2+5*3);
+                print(--2);
+                print(--3/2*5+(6*5));
+                """;
+        run(test);
+        String expected = """
+                14.5
+                2.0
+                37.5
+                """;
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
+
+    }
+
+    @Test
+    void testUnaryForBooleanWorks() {
+
+        String test = """
+                print(!(1==1));
+                print(!(5==3));
+                """;
+        run(test);
+        String expected = """
+                false
+                true
+                """;
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
+
+    }
+
+    @Test
+    void testBooleanWorks() {
+
+        String test = """
+                make a = !(5==3);
+                print(a);
+                make b = false;
+                print(a==b);
+                """;
+        run(test);
+        String expected = """
+                true
+                false
+                """;
+
+        assertEquals(sanitize(expected), sanitize(outputStream.toString()));
+
+    }
+
 
 }

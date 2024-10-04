@@ -31,8 +31,19 @@ class BinaryNode extends ASTNode {
 
     @Override
     public EvalResult evaluate(Environment env) {
-        double leftVal = (double) left.evaluate(env).result;
-        double rightVal = (double) right.evaluate(env).result;
+        Object leftVal = left.evaluate(env).result;
+        Object rightVal = right.evaluate(env).result;
+
+        if (operator == Token.TokenType.EQUAL) {
+            return new EvalResult(leftVal.equals(rightVal));
+        }
+        if (operator == Token.TokenType.NOT_EQUAL) {
+            return new EvalResult(!leftVal.equals(rightVal));
+        }
+        return processNumberOperations((double) leftVal, (double) rightVal, operator);
+    }
+
+    private EvalResult processNumberOperations(double leftVal, double rightVal, Token.TokenType operator) {
         return switch (operator) {
             case PLUS -> new EvalResult(leftVal + rightVal);
             case MINUS -> new EvalResult(leftVal - rightVal);
@@ -43,6 +54,7 @@ class BinaryNode extends ASTNode {
             default -> throw Err.err("Unknown operator: " + operatorToken.value, operatorToken);
         };
     }
+
 }
 
 class BlockNode extends ASTNode {
@@ -460,6 +472,27 @@ class VariableNode extends ASTNode {
     }
 }
 
+class BooleanNode extends ASTNode {
+    final Token token;
+
+    public BooleanNode(Token token) {
+        this.token = token;
+    }
+
+    @Override
+    public EvalResult evaluate(Environment env) {
+        switch (token.type) {
+            case TRUE -> {
+                return new EvalResult(true);
+            }
+            case FALSE -> {
+                return new EvalResult(false);
+            }
+        }
+        throw Err.err("Unexpected token type for boolean", token);
+    }
+}
+
 
 class AssignmentNode extends ASTNode {
     final Token token;
@@ -477,3 +510,24 @@ class AssignmentNode extends ASTNode {
     }
 }
 
+class UnaryNode extends ASTNode {
+    final Token operator;
+    final ASTNode expr;
+
+    public UnaryNode(Token token, ASTNode value) {
+        this.operator = token;
+        this.expr = value;
+    }
+
+    @Override
+    public EvalResult evaluate(Environment env) {
+        Object result = expr.evaluate(env).result;
+        if (operator.type == Token.TokenType.MINUS) {
+            return new EvalResult(-(double) result);
+        }
+        if (operator.type == Token.TokenType.NOT) {
+            return new EvalResult(!(boolean) result);
+        }
+        throw Err.err("Token type is not suitable for unary", operator);
+    }
+}

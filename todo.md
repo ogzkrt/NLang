@@ -9,4 +9,4 @@
   
 ### Nice to have
 - Add Interface to support polymorphism
-- add assert ? read more about them
+- add assert so I can testing can be easier.

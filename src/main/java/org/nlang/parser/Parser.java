@@ -166,12 +166,26 @@ public class Parser {
         consume(TokenType.ASSIGN, "This is not statement = expected");
         ASTNode value = parseExpression();
         if (expr instanceof IndexAccessNode v) {
-            return new IndexSetNode(arrayName,v.parent, v.index, value);
+            return new IndexSetNode(arrayName, v.parent, v.index, value);
         }
         return new AssignmentNode(name, value);
     }
 
     private ASTNode parseExpression() {
+        return parseEquality();
+    }
+
+    private ASTNode parseEquality(){
+        ASTNode expr = parseComparison();
+        while (match(TokenType.EQUAL, TokenType.NOT_EQUAL)) {
+            Token operator = previous();
+            ASTNode right = parseComparison();
+            expr = new BinaryNode(expr, right, operator);
+        }
+        return expr;
+    }
+
+    private ASTNode parseComparison(){
         ASTNode expr = parseAddition();
         while (match(TokenType.GREATER, TokenType.SMALLER)) {
             Token operator = previous();
@@ -180,7 +194,6 @@ public class Parser {
         }
         return expr;
     }
-
 
     private ASTNode parseAddition() {
         ASTNode expr = parseFactor();
@@ -193,13 +206,22 @@ public class Parser {
     }
 
     private ASTNode parseFactor() {
-        ASTNode expr = parseMemberExpression();
+        ASTNode expr = parseUnary();
         while (match(TokenType.MULTIPLY, TokenType.DIVIDE)) {
             Token operator = previous();
-            ASTNode right = parseMemberExpression();
+            ASTNode right = parseUnary();
             expr = new BinaryNode(expr, right, operator);
         }
         return expr;
+    }
+
+    private ASTNode parseUnary() {
+        if (match(TokenType.MINUS, TokenType.NOT)) {
+            Token operator = previous();
+            ASTNode expr = parseUnary();
+            return new UnaryNode(operator,expr);
+        }
+        return parseMemberExpression();
     }
 
     private ASTNode parseMemberExpression() {
@@ -294,6 +316,9 @@ public class Parser {
         }
         if (match(TokenType.LBRACE)) {
             return parseObject();
+        }
+        if (match(TokenType.TRUE,TokenType.FALSE)){
+            return new BooleanNode(previous());
         }
         throw Err.err("Unexpected token: ", peek());
     }

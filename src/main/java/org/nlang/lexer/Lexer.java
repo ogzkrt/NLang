@@ -32,6 +32,8 @@ public class Lexer {
         keywords.put("return", TokenType.RETURN);
         keywords.put("in", TokenType.IN);
         keywords.put("out", TokenType.OUT);
+        keywords.put("true", TokenType.TRUE);
+        keywords.put("false", TokenType.FALSE);
     }
 
 
@@ -69,7 +71,20 @@ public class Lexer {
                 addToken(TokenType.SEMICOLON);
                 break;
             case '=':
-                addToken(TokenType.ASSIGN);
+                if (peek() == '=') {
+                    advance();
+                    addToken(TokenType.EQUAL);
+                } else {
+                    addToken(TokenType.ASSIGN);
+                }
+                break;
+            case '!':
+                if (peek() == '=') {
+                    advance();
+                    addToken(TokenType.NOT_EQUAL);
+                } else {
+                    addToken(TokenType.NOT);
+                }
                 break;
             case '+':
                 addToken(TokenType.PLUS);
@@ -106,8 +121,8 @@ public class Lexer {
                 break;
             case '.':
                 if (peek() == '.') {
-                    addToken(TokenType.DOT_DOT);
                     advance();
+                    addToken(TokenType.DOT_DOT);
                 } else {
                     addToken(TokenType.DOT);
                 }
