@@ -1,4 +1,0 @@
-make a = [1,2,3,4,[1,[7,8,9],2,{"test":"result"},3]];
-
-print(a[4][3]["test"]);
-print(a[4][3].test);

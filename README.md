@@ -81,14 +81,11 @@ for 0..len(a) : x {
 
 ### Functions
 ```html
-func fib(n){
-    if(n<2){
-        return n;
-    }
-    return fib(n-1) + fib(n-2);
+func add(a,b){
+    return a+b;
 }
-make result = fib(20);
-print(result);
+make result = add(3,4);
+print(result); # 7
 ```
 
 ### Built-in functions
