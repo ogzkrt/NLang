@@ -104,13 +104,13 @@ print(result);
   print("Time passed",time()-time());
   ```
 
-#### Objects
+#### HashMaps
 
-Objects are just hashmaps !
 
 ```html
 make obj = { "key1":"value1"};
 print(obj.key1); # value1
+print(obj["key1"]); # value1
 ```
 
 #### Error reporting
@@ -129,4 +129,34 @@ for x in a {
          ^
     print(x);
 Error: variable a is not iterable. at line 2:10
+```
+
+
+
+#### Recursive and Iterative Fibonacci examples
+
+##### Recursive
+
+```console
+func fib(n){
+    if(n<2){
+        return n;
+    }
+    return fib(n-1) + fib(n-2);
+}
+make result = fib(20);
+print(result); # 6765
+```
+
+##### Iterative 
+```console
+func fib(n){
+    make result = [0,1];
+    for 2..n+1{
+        result.add(result[i-1]+result[i-2]);
+    }
+    return result.last();
+}
+make result = fib(20);
+print(result); # 6765
 ```
