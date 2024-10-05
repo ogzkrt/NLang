@@ -409,16 +409,41 @@ class PrintNode extends ASTNode {
     public EvalResult evaluate(Environment env) {
         for (ASTNode e : expressions) {
             Object result = e.evaluate(env).result;
-            if (result instanceof NObjectInstance sp) {
-                System.out.println(sp.formattedView(0));
-            } else {
-                System.out.print(result);
-            }
-
+            print(result);
         }
         System.out.println();
         return null;
     }
+
+    private void print(Object result) {
+        switch (result) {
+            case NObjectInstance sp -> System.out.println(sp.formattedView(0));
+            case Double r -> printDouble(r);
+            case List<?> array -> printList(array);
+            case null, default -> System.out.print(result);
+        }
+    }
+
+    private void printDouble(Double r) {
+        if (r % 1 == 0) {
+            System.out.print(r.intValue());
+            return;
+        }
+        System.out.print(r);
+
+    }
+
+    private void printList(List<?> array) {
+        System.out.print("[");
+        for (int i = 0; i < array.size(); i++) {
+            print(array.get(i));
+            if (i < array.size() - 1) {
+                System.out.print(", ");
+            }
+        }
+        System.out.print("]");
+    }
+
 }
 
 class ReturnNode extends ASTNode {

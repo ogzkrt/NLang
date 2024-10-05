@@ -52,7 +52,7 @@ class FunctionTests {
                 """;
 
         run(test);
-        assertEquals("5.0" + System.lineSeparator(), outputStream.toString());
+        assertEquals("5" + System.lineSeparator(), outputStream.toString());
     }
 
     @Test
@@ -66,7 +66,7 @@ class FunctionTests {
                 """;
 
         run(test);
-        assertEquals("17.0" + System.lineSeparator(), outputStream.toString());
+        assertEquals("17" + System.lineSeparator(), outputStream.toString());
     }
 
     @Test
@@ -85,7 +85,7 @@ class FunctionTests {
                 """;
 
         run(test);
-        assertEquals("[1.0, 4.0, 9.0]" + System.lineSeparator(), outputStream.toString());
+        assertEquals("[1, 4, 9]" + System.lineSeparator(), outputStream.toString());
     }
 
     @Test
@@ -104,7 +104,7 @@ class FunctionTests {
                 """;
 
         run(test);
-        assertEquals("[9.0, 4.0, 1.0]" + System.lineSeparator(), outputStream.toString());
+        assertEquals("[9, 4, 1]" + System.lineSeparator(), outputStream.toString());
     }
 
     @Test
@@ -121,7 +121,7 @@ class FunctionTests {
                 """;
 
         run(test);
-        assertEquals("6765.0" + System.lineSeparator(), outputStream.toString());
+        assertEquals("6765" + System.lineSeparator(), outputStream.toString());
     }
 
     @Test
@@ -139,7 +139,7 @@ class FunctionTests {
                 """;
 
         run(test);
-        assertEquals("6765.0" + System.lineSeparator(), outputStream.toString());
+        assertEquals("6765" + System.lineSeparator(), outputStream.toString());
     }
 
 }

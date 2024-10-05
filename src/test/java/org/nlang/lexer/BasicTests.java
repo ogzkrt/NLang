@@ -47,7 +47,7 @@ class BasicTests {
                 print(a+b);
                 """;
         run(test);
-        assertEquals("22.0" + System.lineSeparator(), outputStream.toString());
+        assertEquals("22" + System.lineSeparator(), outputStream.toString());
     }
 
     @Test
@@ -73,10 +73,10 @@ class BasicTests {
                 """;
         run(test);
         String expected = """
-                4.0
-                16.0
-                36.0
-                64.0
+                4
+                16
+                36
+                64
                 """;
         assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
@@ -93,10 +93,10 @@ class BasicTests {
                 """;
         run(test);
         String expected = """
-                index: 0.0 value: 4.0
-                index: 1.0 value: 16.0
-                index: 2.0 value: 36.0
-                index: 3.0 value: 64.0
+                index: 0 value: 4
+                index: 1 value: 16
+                index: 2 value: 36
+                index: 3 value: 64
                 """;
         assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
@@ -140,7 +140,7 @@ class BasicTests {
         String expected = """
                 Ahmet
                 Veli
-                3.0
+                3
                 7.5
                 """;
         assertEquals(sanitize(expected), sanitize(outputStream.toString()));
@@ -158,9 +158,9 @@ class BasicTests {
                 """;
         run(test);
         String expected = """
-                Element at index: 1.0 is Veli
-                Element at index: 2.0 is 3.0
-                Element at index: 3.0 is 7.5
+                Element at index: 1 is Veli
+                Element at index: 2 is 3
+                Element at index: 3 is 7.5
                 """;
         assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
@@ -176,7 +176,7 @@ class BasicTests {
                 """;
         run(test);
         String expected = """
-                10.0
+                10
                 """;
         assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 

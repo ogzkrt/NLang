@@ -55,9 +55,9 @@ class VariableScopeTests {
 
         run(test);
         String expected = """
-                2.0
-                12.0
-                2.0
+                2
+                12
+                2
                 """;
         assertEquals(sanitize(expected), sanitize(outputStream.toString()));
     }
@@ -76,9 +76,9 @@ class VariableScopeTests {
 
         run(test);
         String expected = """
-                2.0
-                12.0
-                12.0
+                2
+                12
+                12
                 """;
         assertEquals(sanitize(expected), sanitize(outputStream.toString()));
     }

@@ -74,9 +74,9 @@ class ForLoopTests {
 
         run(test);
         String expected = """
-                1.0
-                2.0
-                3.0
+                1
+                2
+                3
                 """;
         assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
@@ -92,8 +92,8 @@ class ForLoopTests {
 
         run(test);
         String expected = """
-                1.0
-                2.0
+                1
+                2
                 """;
         assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 
@@ -171,12 +171,12 @@ class ForLoopTests {
 
         run(test);
         String expected = """
-                1.0a
-                1.0b
-                1.0c
-                2.0b
-                2.0c
-                3.0c
+                1a
+                1b
+                1c
+                2b
+                2c
+                3c
                 """;
         assertEquals(sanitize(expected), sanitize(outputStream.toString()));
 

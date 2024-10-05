@@ -65,7 +65,7 @@ class IterableTests {
                 """;
 
         run(test);
-        assertEquals("[3.0, 2.0, 1.0]" + System.lineSeparator(), outputStream.toString());
+        assertEquals("[3, 2, 1]" + System.lineSeparator(), outputStream.toString());
 
     }
 
@@ -78,7 +78,7 @@ class IterableTests {
                 """;
 
         run(test);
-        assertEquals("[1.0, 2.0, 3.0, 12.0]" + System.lineSeparator(), outputStream.toString());
+        assertEquals("[1, 2, 3, 12]" + System.lineSeparator(), outputStream.toString());
 
     }
 
@@ -91,7 +91,7 @@ class IterableTests {
                 """;
 
         run(test);
-        assertEquals("[1.0, 3.0]" + System.lineSeparator(), outputStream.toString());
+        assertEquals("[1, 3]" + System.lineSeparator(), outputStream.toString());
 
     }
 
@@ -103,7 +103,7 @@ class IterableTests {
                 """;
 
         run(test);
-        assertEquals("3.0" + System.lineSeparator(), outputStream.toString());
+        assertEquals("3" + System.lineSeparator(), outputStream.toString());
 
     }
 
@@ -115,7 +115,7 @@ class IterableTests {
                 """;
 
         run(test);
-        assertEquals("1.0" + System.lineSeparator(), outputStream.toString());
+        assertEquals("1" + System.lineSeparator(), outputStream.toString());
 
     }
 
@@ -128,7 +128,7 @@ class IterableTests {
                 """;
 
         run(test);
-        assertEquals("[1.0, 2.0, 12.0]" + System.lineSeparator(), outputStream.toString());
+        assertEquals("[1, 2, 12]" + System.lineSeparator(), outputStream.toString());
 
     }
 
@@ -141,7 +141,7 @@ class IterableTests {
                 """;
 
         run(test);
-        assertEquals("[3.0, 2.0, 1.0]" + System.lineSeparator(), outputStream.toString());
+        assertEquals("[3, 2, 1]" + System.lineSeparator(), outputStream.toString());
 
     }
 
@@ -189,9 +189,9 @@ class IterableTests {
 
         run(test);
         assertEquals(sanitize("""
-                2.0
-                5.0
-                8.0
+                2
+                5
+                8
                 """), sanitize(outputStream.toString()));
 
     }
@@ -210,9 +210,9 @@ class IterableTests {
 
         run(test);
         assertEquals(sanitize("""
-                5.0
-                5.0
-                5.0
+                5
+                5
+                5
                 """), sanitize(outputStream.toString()));
 
     }
@@ -226,7 +226,7 @@ class IterableTests {
 
         run(test);
         assertEquals(sanitize("""
-                [null, null, null, null, 101.0]
+                [null, null, null, null, 101]
                 """), sanitize(outputStream.toString()));
 
     }
