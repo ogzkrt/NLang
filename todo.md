@@ -1,6 +1,6 @@
 ### Must
 - ~~Try to get rid of array operation node~~
-- Fix always working with doubles issue
+- ~~Fix always working with doubles issue~~
 - ~~Add logical AND OR~~
 - ~~Add assert~~
 - ~~Add something like Struct or Class for grouping~~
