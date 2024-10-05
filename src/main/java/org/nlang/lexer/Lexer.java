@@ -193,7 +193,7 @@ public class Lexer {
     }
 
     private char next() {
-        if (isAtEnd()) return '\0';
+        if (current + 1 >= source.length()) return '\0';
         return source.charAt(current + 1);
     }
 

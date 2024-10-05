@@ -1,3 +1,5 @@
-make c = false;
-make d = true;
-assert c or d ;
+make a = {};
+
+a["oguz"] = -3/2*15.3;
+
+print(a.oguz);
